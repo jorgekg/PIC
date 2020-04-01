@@ -1,0 +1,18 @@
+main
+	__CC2DW
+	UART1_Init
+	clear
+		print
+			UART1_Write
+	println
+		UART1_Write_Text
+			UART1_Write
+		print
+			UART1_Write
+	UART1_Data_Ready
+	UART1_Read
+	print
+		UART1_Write
+	printL
+		UART1_Write_Text
+			UART1_Write
