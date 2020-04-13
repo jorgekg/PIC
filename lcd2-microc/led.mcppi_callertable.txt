@@ -1,6 +1,14 @@
 main
 	__CC2DW
 	UART1_Init
+	UART1_Write_Text
+		UART1_Write
+	UART1_Read_Text
+		UART1_Data_Ready
+		UART1_Read
+	atoi
+		isdigit
+		Mul_16x16_U
 	Lcd_Init
 		Delay_5500us
 		Delay_1us
@@ -49,12 +57,9 @@ main
 	IntToStr
 		WordToStr
 			Div_16x16_U
-	UART1_Write_Text
-		UART1_Write
-	Pula_Linha
-		UART1_Write
 	Lcd_Chr_CP
 		Lcd_Cmd
 			Delay_1us
 			Delay_5500us
 			Delay_50us
+	Move_Delay

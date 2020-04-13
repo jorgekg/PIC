@@ -199,6 +199,7 @@ adon_bit
 adres
 adresh
 adresl
+alert
 an10
 an10_bit
 an11
@@ -568,6 +569,8 @@ go_bit
 go_done
 go_done_bit
 halfbits
+hhh
+hhht
 hlvdcon
 hlvden
 hlvden_bit
@@ -587,6 +590,7 @@ hlvdl2
 hlvdl2_bit
 hlvdl3
 hlvdl3_bit
+hora_txt
 i2c1_init
 i2c1_is_idle
 i2c1_rd
@@ -674,7 +678,6 @@ isalnum
 isalpha
 iscntrl
 isdigit
-isfirst
 isgraph
 islower
 ispunct
@@ -862,6 +865,8 @@ mmc_read_cid
 mmc_read_csd
 mmc_read_sector
 mmc_write_sector
+mmm
+mmmt
 modf
 move_delay
 mul_16x16_s
@@ -1197,6 +1202,8 @@ re2
 re2_bit
 re3
 re3_bit
+read_eeprom
+read_rtc
 res032
 ri
 ri_bit
@@ -1442,6 +1449,7 @@ sspm3_bit
 sspov
 sspov_bit
 sspstat
+sss
 status
 stkful
 stkful_bit
@@ -1483,6 +1491,7 @@ swdten_bit
 sync
 sync_bit
 system3x5
+t
 t016bit
 t016bit_bit
 t08bit
@@ -1589,8 +1598,10 @@ tblptru3
 tblptru3_bit
 tblptru4
 tblptru4_bit
+tematual
 temp
 temperatura
+time
 time_datetoepoch
 time_epochtodate
 time_jd1970
@@ -1645,6 +1656,7 @@ tosh
 tosl
 tosu
 toupper
+transform_time
 trisa
 trisa0
 trisa0_bit
@@ -1751,6 +1763,7 @@ txip_bit
 txreg
 txsta
 txt
+tzao
 ua
 ua_bit
 uart_rd_ptr
@@ -1790,6 +1803,8 @@ wren
 wren_bit
 wrerr
 wrerr_bit
+write_eeprom
+write_rtc
 wue
 wue_bit
 xtoi
