@@ -30,7 +30,7 @@ unsigned short Temperatura;
 
 
 
-int hhh, mmm, sss, mmmt, hhht;
+int hhh, mmm, sss, mmmt, hhht, mmmt2;
 
 
 
@@ -153,64 +153,62 @@ int Read_EEPROM(int END)
   return(Dado);
 }
 
+char Tecla;
+
+short Le_Teclado()
+{
+  PORTD = 0B00010000; // VOCÊ SELECIONOU LA
+  if (PORTB.RB0 == 1) {while(PORTB.RB0==1); return '7';};
+  if (PORTB.RB1 == 1) {while(PORTB.RB1==1); return '8';};
+  if (PORTB.RB2 == 1) {while(PORTB.RB2==1); return '9';};
+  if (PORTB.RB3 == 1) {while(PORTB.RB3==1); return '%';};
+
+
+
+  PORTD = 0B00100000; // VOCÊ SELECIONOU LB
+  if (PORTB.RB0 == 1) {while(PORTB.RB0==1);return '4';};
+  if (PORTB.RB1 == 1) {while(PORTB.RB1==1);return '5';};
+  if (PORTB.RB2 == 1) {while(PORTB.RB2==1);return '6';};
+  if (PORTB.RB3 == 1) {while(PORTB.RB3==1);return '*';};
+
+
+
+  PORTD = 0B01000000; // VOCÊ SELECIONOU LC
+  if (PORTB.RB0 == 1) {while(PORTB.RB0==1);return '1';};
+  if (PORTB.RB1 == 1) {while(PORTB.RB1==1);return '2';};
+  if (PORTB.RB2 == 1) {while(PORTB.RB2==1);return '3';};
+  if (PORTB.RB3 == 1) {while(PORTB.RB3==1);return '-';};
+
+
+
+  PORTD = 0B10000000; // VOCÊ SELECIONOU LD
+  if (PORTB.RB0 == 1) {while(PORTB.RB0==1);return 'C';};
+  if (PORTB.RB1 == 1) {while(PORTB.RB1==1);return '0';};
+  if (PORTB.RB2 == 1) {while(PORTB.RB2==1);return '=';};
+  if (PORTB.RB3 == 1) {while(PORTB.RB3==1);return '+';};
+
+
+
+  return 255;
+}
 
 char HORA_TXT[20];
-char t[2];
+char t[1];
+char t2[3];
+char t3[2];
 char tzao[5];
 int temAtual;
+char tempHoras[6];
+char tempTeclas[6];
+int iteracao = 0;
+short pass;
+char Tecla2;
 
 void main()
  {
         UART1_Init(19200);
 
         I2C1_Init(100000);// i2c para acessar ID = D0h  = RTC
-        
-        if (PORTB.F6 == 1) {
-          Write_EEPROM(0, 0xFF);
-          Write_EEPROM(1, 0xFF);
-          Write_EEPROM(2, 0xFF);
-        }
-        
-        // Pega a Temperatura atual;
-        if (Read_EEPROM(1) == 0xFF) {
-          UART1_Write_Text("\r QUAL HORARIO MONITORAR\r");
-          while(!(UART1_Data_Ready() == 1));         //AGUARDA CHEGAR ALGO NA SERIAL VINDO DO TERMINAL BURRO
-          UART1_Read_Text(TIME, ENTER, 37);
-          UART1_Write_Text(TIME);
-          t[0] = TIME[0];
-          t[1] = TIME[1];
-          hhht=atoi(t);
-          Write_EEPROM(1, hhht);
-          t[0] = TIME[3];
-          t[1] = TIME[4];
-          mmmt=atoi(t);
-          Write_EEPROM(2,mmmt);
-        } else {
-          hhht = Read_EEPROM(1);
-          IntToStr(hhht, tzao);
-          TIME[0] = tzao[4];
-          TIME[1] = tzao[5];
-          TIME[2] = ':';
-          mmmt = Read_EEPROM(2);
-          IntToStr(mmmt, tzao);
-          if (mmmt < 10) {
-             TIME[3] = '0';
-             TIME[4] = tzao[5];
-          } else {
-             TIME[3] = tzao[4];
-             TIME[4] = tzao[5];
-          }
-        }
-
-        if (Read_EEPROM(0) == 0xFF) {
-          UART1_Write_Text("QUAL A TEMPERATURA MAXIMA\r");
-          while(!(UART1_Data_Ready() == 1));         //AGUARDA CHEGAR ALGO NA SERIAL VINDO DO TERMINAL BURRO
-          UART1_Read_Text(ENTRADA, ENTER, 32);
-          temAtual=atoi(ENTRADA);
-          Write_EEPROM(0, temAtual);
-        } else {
-          temAtual = Read_EEPROM(0);
-        }
 
         ADCON1=0B00001110;
         TRISB = 0B00001111;
@@ -218,6 +216,116 @@ void main()
         Lcd_Init();
         Lcd_Cmd(_LCD_CURSOR_OFF);
         CustomChar();
+        Lcd_Out(1, 2, "Digite a senha");
+        while(1)
+          {
+             Tecla2 = Le_Teclado() ;
+             if(!(Tecla2==255)) {
+               pass = Tecla2;
+               break;
+             }
+          }
+        if (pass == '0') {
+          Write_EEPROM(0, 0xFF);
+          Write_EEPROM(1, 0xFF);
+          Write_EEPROM(2, 0xFF);
+        }
+        // Pega a Temperatura atual;
+        if (Read_EEPROM(1) == 0xFF) {
+          Lcd_Out(1, 2, "HORARIO MONITORAR");
+            while(1)
+            {
+               Tecla = Le_Teclado() ;
+               if (Tecla == '=') {
+                break;
+               }
+               if (Tecla == '-') {
+                tempHoras[iteracao] = ':';
+                iteracao = iteracao + 1;
+                lcd_Out(2, 5, tempTeclas);
+                continue;
+               }
+               if (Tecla == '*') {
+                tempHoras[iteracao] = ' ';
+                iteracao = iteracao - 1;
+                lcd_Out(2, 5, tempHoras);
+                continue;
+               }
+               if(!(Tecla==255)) {
+                 tempHoras[iteracao] = Tecla;
+                 iteracao = iteracao + 1;
+               }
+               lcd_Out(2, 5, tempHoras);
+            }
+
+           TIME[0] = tempHoras[0];
+           TIME[1] = tempHoras[1];
+           TIME[2] = tempHoras[2];
+           TIME[3] = tempHoras[3];
+           TIME[4] = tempHoras[4];
+          t3[0] = tempHoras[0];
+          t[0] = t3[0];
+          t3[0] = tempHoras[1];
+          t[1] = t3[0];
+          hhht=atoi(t);
+          Write_EEPROM(1, hhht);
+          t2[0] = TIME[3];
+          t2[1] = TIME[4];
+          mmmt2=atoi(t2);
+          Write_EEPROM(2,mmmt2);
+        } else {
+          hhht = Read_EEPROM(1);
+          IntToStr(hhht, tzao);
+          TIME[0] = tzao[4];
+          TIME[1] = tzao[5];
+          TIME[2] = ':';
+          mmmt2 = Read_EEPROM(2);
+          if (mmmt < 10) {
+             TIME[3] = '0';
+             TIME[4] = tzao[4];
+          } else {
+             TIME[3] = tzao[4];
+             TIME[4] = tzao[5];
+          }
+        }
+        if (Read_EEPROM(0) == 0xFF) {
+          iteracao = 0;
+          tempTeclas[0] = ' ';
+          tempTeclas[1] = ' ';
+          tempTeclas[2] = ' ';
+          tempTeclas[3] = ' ';
+          tempTeclas[4] = ' ';
+          lcd_Out(2, 5, tempTeclas);
+          Lcd_Out(1, 2, "TEMPERATURA MAXIMA");
+          while(1)
+          {
+             Tecla = Le_Teclado() ;
+             if (Tecla == '=') {
+              break;
+             }
+             if (Tecla == '*') {
+              tempTeclas[iteracao] = ' ';
+              iteracao = iteracao - 1;
+              lcd_Out(2, 5, tempTeclas);
+              continue;
+             }
+             if(!(Tecla==255)) {
+               tempTeclas[iteracao] = Tecla;
+               iteracao = iteracao + 1;
+             }
+             lcd_Out(2, 5, tempTeclas);
+          }
+          temAtual=atoi(tempTeclas);
+          tempTeclas[0] = ' ';
+          tempTeclas[1] = ' ';
+          tempTeclas[2] = ' ';
+          tempTeclas[3] = ' ';
+          tempTeclas[4] = ' ';
+          lcd_Out(2, 5, tempTeclas);
+          Write_EEPROM(0, temAtual);
+        } else {
+          temAtual = Read_EEPROM(0);
+        }
 
         Lcd_Out(1, 2, "TEMPERATURA ATUAL");
         Lcd_Out(3, 2, "TEMPERATURA MAXIMA");
@@ -225,21 +333,22 @@ void main()
         lcd_Out(4, 12, TXT);
         lcd_chr_cp(0);
         lcd_chr_cp('C');
-
         while(1)
         {
+        IntToStr(mmmt2, tzao);
+          UART1_Write_Text(tzao);
                 // Le a Temperatura atual.
                 sss= Read_RTC(0); //le segundos
                 mmm= Read_RTC(1); //le minutos
                 hhh= Read_RTC(2); //le horas
-                
+
                 // transforma para decimal;
                 Transform_Time(&sss,&mmm,&hhh);
-                
+
                 // Mostra a hora atual
                 sprintf(HORA_TXT, "%02d:%02d:%02d",hhh,mmm,sss);
                 lcd_Out(4,1,HORA_TXT);
-                
+
                 // Pega a Temperatura do sensor;
                 AD = ADC_Read(0);
                 Temperatura = ((float) AD * 5.0/1024.0) * 100.0;
@@ -248,12 +357,15 @@ void main()
                 Lcd_Out(2, 8, TXT);
                 Lcd_Chr_Cp(0);
                 Lcd_Chr_CP('C');
-                IntToStr(Temperatura, TXT);
+                inttostr(mmmt2, TXT);
                 UART1_Write_Text(TXT);
-                IntToStr(temAtual, TXT);
-                UART1_Write_Text(TXT);
-                if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
+//                IntToStr(mmm, TXT);
+//                UART1_Write_Text(TXT);
+//                inttostr(mmmt == mmm, TXT);
+//                UART1_Write_Text(TXT);
+                if((Temperatura >= temAtual) && (mmmt2 == mmm && hhh == hhht)) {
                     Alert();
+                }
 
         }
 }

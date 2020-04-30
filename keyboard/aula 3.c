@@ -164,13 +164,13 @@ void main()
         UART1_Init(19200);
 
         I2C1_Init(100000);// i2c para acessar ID = D0h  = RTC
-        
+
         if (PORTB.F6 == 1) {
           Write_EEPROM(0, 0xFF);
           Write_EEPROM(1, 0xFF);
           Write_EEPROM(2, 0xFF);
         }
-        
+
         // Pega a Temperatura atual;
         if (Read_EEPROM(1) == 0xFF) {
           UART1_Write_Text("\r QUAL HORARIO MONITORAR\r");
@@ -232,14 +232,14 @@ void main()
                 sss= Read_RTC(0); //le segundos
                 mmm= Read_RTC(1); //le minutos
                 hhh= Read_RTC(2); //le horas
-                
+
                 // transforma para decimal;
                 Transform_Time(&sss,&mmm,&hhh);
-                
+
                 // Mostra a hora atual
                 sprintf(HORA_TXT, "%02d:%02d:%02d",hhh,mmm,sss);
                 lcd_Out(4,1,HORA_TXT);
-                
+
                 // Pega a Temperatura do sensor;
                 AD = ADC_Read(0);
                 Temperatura = ((float) AD * 5.0/1024.0) * 100.0;
@@ -248,10 +248,6 @@ void main()
                 Lcd_Out(2, 8, TXT);
                 Lcd_Chr_Cp(0);
                 Lcd_Chr_CP('C');
-                IntToStr(Temperatura, TXT);
-                UART1_Write_Text(TXT);
-                IntToStr(temAtual, TXT);
-                UART1_Write_Text(TXT);
                 if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
                     Alert();
 

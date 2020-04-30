@@ -617,15 +617,9 @@ L_main19:
 	MOVWF       _TIME+4 
 ;aula 3.c,202 :: 		}
 L_main20:
-;aula 3.c,203 :: 		UART1_Write_Text(TIME);
-	MOVLW       _TIME+0
-	MOVWF       FARG_UART1_Write_Text_uart_text+0 
-	MOVLW       hi_addr(_TIME+0)
-	MOVWF       FARG_UART1_Write_Text_uart_text+1 
-	CALL        _UART1_Write_Text+0, 0
-;aula 3.c,204 :: 		}
+;aula 3.c,203 :: 		}
 L_main18:
-;aula 3.c,206 :: 		if (Read_EEPROM(0) == 0xFF) {
+;aula 3.c,205 :: 		if (Read_EEPROM(0) == 0xFF) {
 	CLRF        FARG_Read_EEPROM_END+0 
 	CLRF        FARG_Read_EEPROM_END+1 
 	CALL        _Read_EEPROM+0, 0
@@ -638,13 +632,13 @@ L_main18:
 L__main35:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_main21
-;aula 3.c,207 :: 		UART1_Write_Text("QUAL A TEMPERATURA MAXIMA\r");
+;aula 3.c,206 :: 		UART1_Write_Text("QUAL A TEMPERATURA MAXIMA\r");
 	MOVLW       ?lstr2_aula_323+0
 	MOVWF       FARG_UART1_Write_Text_uart_text+0 
 	MOVLW       hi_addr(?lstr2_aula_323+0)
 	MOVWF       FARG_UART1_Write_Text_uart_text+1 
 	CALL        _UART1_Write_Text+0, 0
-;aula 3.c,208 :: 		while(!(UART1_Data_Ready() == 1));         //AGUARDA CHEGAR ALGO NA SERIAL VINDO DO TERMINAL BURRO
+;aula 3.c,207 :: 		while(!(UART1_Data_Ready() == 1));         //AGUARDA CHEGAR ALGO NA SERIAL VINDO DO TERMINAL BURRO
 L_main22:
 	CALL        _UART1_Data_Ready+0, 0
 	MOVF        R0, 0 
@@ -653,7 +647,7 @@ L_main22:
 	GOTO        L_main23
 	GOTO        L_main22
 L_main23:
-;aula 3.c,209 :: 		UART1_Read_Text(ENTRADA, ENTER, 32);
+;aula 3.c,208 :: 		UART1_Read_Text(ENTRADA, ENTER, 32);
 	MOVLW       _ENTRADA+0
 	MOVWF       FARG_UART1_Read_Text_Output+0 
 	MOVLW       hi_addr(_ENTRADA+0)
@@ -665,7 +659,7 @@ L_main23:
 	MOVLW       32
 	MOVWF       FARG_UART1_Read_Text_Attempts+0 
 	CALL        _UART1_Read_Text+0, 0
-;aula 3.c,210 :: 		temAtual=atoi(ENTRADA);
+;aula 3.c,209 :: 		temAtual=atoi(ENTRADA);
 	MOVLW       _ENTRADA+0
 	MOVWF       FARG_atoi_s+0 
 	MOVLW       hi_addr(_ENTRADA+0)
@@ -675,7 +669,7 @@ L_main23:
 	MOVWF       _temAtual+0 
 	MOVF        R1, 0 
 	MOVWF       _temAtual+1 
-;aula 3.c,211 :: 		Write_EEPROM(0, temAtual);
+;aula 3.c,210 :: 		Write_EEPROM(0, temAtual);
 	CLRF        FARG_Write_EEPROM_END+0 
 	CLRF        FARG_Write_EEPROM_END+1 
 	MOVF        R0, 0 
@@ -683,10 +677,10 @@ L_main23:
 	MOVF        R1, 0 
 	MOVWF       FARG_Write_EEPROM_DADO+1 
 	CALL        _Write_EEPROM+0, 0
-;aula 3.c,212 :: 		} else {
+;aula 3.c,211 :: 		} else {
 	GOTO        L_main24
 L_main21:
-;aula 3.c,213 :: 		temAtual = Read_EEPROM(0);
+;aula 3.c,212 :: 		temAtual = Read_EEPROM(0);
 	CLRF        FARG_Read_EEPROM_END+0 
 	CLRF        FARG_Read_EEPROM_END+1 
 	CALL        _Read_EEPROM+0, 0
@@ -694,25 +688,25 @@ L_main21:
 	MOVWF       _temAtual+0 
 	MOVF        R1, 0 
 	MOVWF       _temAtual+1 
-;aula 3.c,214 :: 		}
+;aula 3.c,213 :: 		}
 L_main24:
-;aula 3.c,216 :: 		ADCON1=0B00001110;
+;aula 3.c,215 :: 		ADCON1=0B00001110;
 	MOVLW       14
 	MOVWF       ADCON1+0 
-;aula 3.c,217 :: 		TRISB = 0B00001111;
+;aula 3.c,216 :: 		TRISB = 0B00001111;
 	MOVLW       15
 	MOVWF       TRISB+0 
-;aula 3.c,218 :: 		PORTB = 0B00000000;
+;aula 3.c,217 :: 		PORTB = 0B00000000;
 	CLRF        PORTB+0 
-;aula 3.c,219 :: 		Lcd_Init();
+;aula 3.c,218 :: 		Lcd_Init();
 	CALL        _Lcd_Init+0, 0
-;aula 3.c,220 :: 		Lcd_Cmd(_LCD_CURSOR_OFF);
+;aula 3.c,219 :: 		Lcd_Cmd(_LCD_CURSOR_OFF);
 	MOVLW       12
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
-;aula 3.c,221 :: 		CustomChar();
+;aula 3.c,220 :: 		CustomChar();
 	CALL        _CustomChar+0, 0
-;aula 3.c,223 :: 		Lcd_Out(1, 2, "TEMPERATURA ATUAL");
+;aula 3.c,222 :: 		Lcd_Out(1, 2, "TEMPERATURA ATUAL");
 	MOVLW       1
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       2
@@ -722,7 +716,7 @@ L_main24:
 	MOVLW       hi_addr(?lstr3_aula_323+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;aula 3.c,224 :: 		Lcd_Out(3, 2, "TEMPERATURA MAXIMA");
+;aula 3.c,223 :: 		Lcd_Out(3, 2, "TEMPERATURA MAXIMA");
 	MOVLW       3
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       2
@@ -732,7 +726,7 @@ L_main24:
 	MOVLW       hi_addr(?lstr4_aula_323+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;aula 3.c,225 :: 		inttostr(temAtual, TXT);
+;aula 3.c,224 :: 		inttostr(temAtual, TXT);
 	MOVF        _temAtual+0, 0 
 	MOVWF       FARG_IntToStr_input+0 
 	MOVF        _temAtual+1, 0 
@@ -742,7 +736,7 @@ L_main24:
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_IntToStr_output+1 
 	CALL        _IntToStr+0, 0
-;aula 3.c,226 :: 		lcd_Out(4, 12, TXT);
+;aula 3.c,225 :: 		lcd_Out(4, 12, TXT);
 	MOVLW       4
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       12
@@ -752,16 +746,16 @@ L_main24:
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;aula 3.c,227 :: 		lcd_chr_cp(0);
+;aula 3.c,226 :: 		lcd_chr_cp(0);
 	CLRF        FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;aula 3.c,228 :: 		lcd_chr_cp('C');
+;aula 3.c,227 :: 		lcd_chr_cp('C');
 	MOVLW       67
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;aula 3.c,230 :: 		while(1)
+;aula 3.c,229 :: 		while(1)
 L_main25:
-;aula 3.c,233 :: 		sss= Read_RTC(0); //le segundos
+;aula 3.c,232 :: 		sss= Read_RTC(0); //le segundos
 	CLRF        FARG_Read_RTC_END+0 
 	CLRF        FARG_Read_RTC_END+1 
 	CALL        _Read_RTC+0, 0
@@ -769,7 +763,7 @@ L_main25:
 	MOVWF       _sss+0 
 	MOVF        R1, 0 
 	MOVWF       _sss+1 
-;aula 3.c,234 :: 		mmm= Read_RTC(1); //le minutos
+;aula 3.c,233 :: 		mmm= Read_RTC(1); //le minutos
 	MOVLW       1
 	MOVWF       FARG_Read_RTC_END+0 
 	MOVLW       0
@@ -779,7 +773,7 @@ L_main25:
 	MOVWF       _mmm+0 
 	MOVF        R1, 0 
 	MOVWF       _mmm+1 
-;aula 3.c,235 :: 		hhh= Read_RTC(2); //le horas
+;aula 3.c,234 :: 		hhh= Read_RTC(2); //le horas
 	MOVLW       2
 	MOVWF       FARG_Read_RTC_END+0 
 	MOVLW       0
@@ -789,7 +783,7 @@ L_main25:
 	MOVWF       _hhh+0 
 	MOVF        R1, 0 
 	MOVWF       _hhh+1 
-;aula 3.c,238 :: 		Transform_Time(&sss,&mmm,&hhh);
+;aula 3.c,237 :: 		Transform_Time(&sss,&mmm,&hhh);
 	MOVLW       _sss+0
 	MOVWF       FARG_Transform_Time_sec+0 
 	MOVLW       hi_addr(_sss+0)
@@ -803,7 +797,7 @@ L_main25:
 	MOVLW       hi_addr(_hhh+0)
 	MOVWF       FARG_Transform_Time_hr+1 
 	CALL        _Transform_Time+0, 0
-;aula 3.c,241 :: 		sprintf(HORA_TXT, "%02d:%02d:%02d",hhh,mmm,sss);
+;aula 3.c,240 :: 		sprintf(HORA_TXT, "%02d:%02d:%02d",hhh,mmm,sss);
 	MOVLW       _HORA_TXT+0
 	MOVWF       FARG_sprintf_wh+0 
 	MOVLW       hi_addr(_HORA_TXT+0)
@@ -827,7 +821,7 @@ L_main25:
 	MOVF        _sss+1, 0 
 	MOVWF       FARG_sprintf_wh+10 
 	CALL        _sprintf+0, 0
-;aula 3.c,242 :: 		lcd_Out(4,1,HORA_TXT);
+;aula 3.c,241 :: 		lcd_Out(4,1,HORA_TXT);
 	MOVLW       4
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       1
@@ -837,14 +831,14 @@ L_main25:
 	MOVLW       hi_addr(_HORA_TXT+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;aula 3.c,245 :: 		AD = ADC_Read(0);
+;aula 3.c,244 :: 		AD = ADC_Read(0);
 	CLRF        FARG_ADC_Read_channel+0 
 	CALL        _ADC_Read+0, 0
 	MOVF        R0, 0 
 	MOVWF       _AD+0 
 	MOVF        R1, 0 
 	MOVWF       _AD+1 
-;aula 3.c,246 :: 		Temperatura = ((float) AD * 5.0/1024.0) * 100.0;
+;aula 3.c,245 :: 		Temperatura = ((float) AD * 5.0/1024.0) * 100.0;
 	CALL        _Word2Double+0, 0
 	MOVLW       0
 	MOVWF       R4 
@@ -876,7 +870,7 @@ L_main25:
 	CALL        _Double2Byte+0, 0
 	MOVF        R0, 0 
 	MOVWF       _Temperatura+0 
-;aula 3.c,247 :: 		inttostr(Temperatura, TXT);
+;aula 3.c,246 :: 		inttostr(Temperatura, TXT);
 	MOVF        R0, 0 
 	MOVWF       FARG_IntToStr_input+0 
 	MOVLW       0
@@ -886,7 +880,7 @@ L_main25:
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_IntToStr_output+1 
 	CALL        _IntToStr+0, 0
-;aula 3.c,248 :: 		Lcd_Out(2, 1, TIME);
+;aula 3.c,247 :: 		Lcd_Out(2, 1, TIME);
 	MOVLW       2
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       1
@@ -896,7 +890,7 @@ L_main25:
 	MOVLW       hi_addr(_TIME+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;aula 3.c,249 :: 		Lcd_Out(2, 8, TXT);
+;aula 3.c,248 :: 		Lcd_Out(2, 8, TXT);
 	MOVLW       2
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       8
@@ -906,14 +900,14 @@ L_main25:
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;aula 3.c,250 :: 		Lcd_Chr_Cp(0);
+;aula 3.c,249 :: 		Lcd_Chr_Cp(0);
 	CLRF        FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;aula 3.c,251 :: 		Lcd_Chr_CP('C');
+;aula 3.c,250 :: 		Lcd_Chr_CP('C');
 	MOVLW       67
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;aula 3.c,252 :: 		if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
+;aula 3.c,251 :: 		if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
 	MOVLW       128
 	MOVWF       R0 
 	MOVLW       128
@@ -945,11 +939,11 @@ L__main38:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_main29
 L__main30:
-;aula 3.c,253 :: 		Alert();
+;aula 3.c,252 :: 		Alert();
 	CALL        _Alert+0, 0
 L_main29:
-;aula 3.c,255 :: 		}
+;aula 3.c,254 :: 		}
 	GOTO        L_main25
-;aula 3.c,256 :: 		}
+;aula 3.c,255 :: 		}
 	GOTO        $+0
 ; end of _main

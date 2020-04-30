@@ -201,7 +201,6 @@ void main()
  TIME[3] = tzao[4];
  TIME[4] = tzao[5];
  }
- UART1_Write_Text(TIME);
  }
 
  if (Read_EEPROM(0) == 0xFF) {
