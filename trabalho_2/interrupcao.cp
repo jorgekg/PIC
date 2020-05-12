@@ -160,6 +160,9 @@ void Print_World() {
  for(i = 0; i < sizeof(world); ++i) {
  for(j = 0; j < sizeof(world[i]) ; ++j)
  {
+ UART1_Write('a');
+ UART1_Write(13);
+ UART1_Write(10);
  Lcd_Chr(i + 1, j + 1, world[i][j]);
  }
  }
@@ -260,5 +263,5 @@ void main()
 
  Create_World();
  Print_World();
-#line 327 "C:/git/pic-jorge/trabalho_2/interrupcao.c"
+#line 330 "C:/git/pic-jorge/trabalho_2/interrupcao.c"
 }
