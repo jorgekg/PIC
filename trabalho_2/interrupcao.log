@@ -4,14 +4,15 @@ warning: 0	1501	Specified search path does not exist: 'C:\Users\jorge\OneDrive\Á
 warning: 0	1501	Specified search path does not exist: 'C:\Users\jorge\OneDrive\Área de Trabalho\mikroC PRO for PIC\uses\P18'	 
 warning: 0	1501	Specified search path does not exist: 'C:\Users\jorge\git\PIC\interrupcao'	 
 hint: 0	1138	Available RAM: 3947 [bytes], Available ROM: 65536 [bytes]	 
-diagnostics: 0	126	All files Preprocessed in 125 ms	 
+diagnostics: 0	126	All files Preprocessed in 156 ms	 
 diagnostics: 0	122	Compilation Started	interrupcao.c
-warning: 225	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	interrupcao.c
-diagnostics: 306	123	Compiled Successfully	interrupcao.c
-diagnostics: 0	127	All files Compiled in 453 ms	 
-hint: 0	1143	Used RAM (bytes): 121 (3%)  Free RAM (bytes): 3826 (97%)	Used RAM (bytes): 121 (3%)  Free RAM (bytes): 3826 (97%)
-hint: 0	1143	Used ROM (bytes): 1442 (2%)  Free ROM (bytes): 64094 (98%)	Used ROM (bytes): 1442 (2%)  Free ROM (bytes): 64094 (98%)
+warning: 177	1503	Result is not defined in function: 'update_pacman_orientation'	interrupcao.c
+warning: 246	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	interrupcao.c
+diagnostics: 327	123	Compiled Successfully	interrupcao.c
+diagnostics: 0	127	All files Compiled in 516 ms	 
+hint: 0	1143	Used RAM (bytes): 119 (3%)  Free RAM (bytes): 3828 (97%)	Used RAM (bytes): 119 (3%)  Free RAM (bytes): 3828 (97%)
+hint: 0	1143	Used ROM (bytes): 1386 (2%)  Free ROM (bytes): 64150 (98%)	Used ROM (bytes): 1386 (2%)  Free ROM (bytes): 64150 (98%)
 diagnostics: 0	125	Project Linked Successfully	interrupcao.mcppi
-diagnostics: 0	128	Linked in 1766 ms	 
-diagnostics: 0	129	Project 'interrupcao.mcppi' completed: 3453 ms	 
-diagnostics: 0	103	Finished successfully: 12 mai 2020, 19:49:30	interrupcao.mcppi
+diagnostics: 0	128	Linked in 1625 ms	 
+diagnostics: 0	129	Project 'interrupcao.mcppi' completed: 3406 ms	 
+diagnostics: 0	103	Finished successfully: 12 mai 2020, 20:05:09	interrupcao.mcppi

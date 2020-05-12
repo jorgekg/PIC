@@ -28,20 +28,20 @@ L_interrupt0:
 	XORLW       3
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt85
+	GOTO        L__interrupt92
 	MOVLW       232
 	SUBWF       _cnt+0, 0 
-L__interrupt85:
+L__interrupt92:
 	BTFSS       STATUS+0, 0 
 	GOTO        L_interrupt2
 ;interrupcao.c,56 :: 		if (peca_por_min == 0) {
 	MOVLW       0
 	XORWF       _peca_por_min+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt86
+	GOTO        L__interrupt93
 	MOVLW       0
 	XORWF       _peca_por_min+0, 0 
-L__interrupt86:
+L__interrupt93:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt3
 ;interrupcao.c,57 :: 		peca_por_min = cnt2 * 60;
@@ -72,7 +72,7 @@ L_interrupt2:
 ;interrupcao.c,64 :: 		}
 L_interrupt1:
 ;interrupcao.c,65 :: 		}
-L__interrupt84:
+L__interrupt91:
 	RETFIE      1
 ; end of _interrupt
 
@@ -347,12 +347,12 @@ L_Move_Delay52:
 
 _CustomChar:
 
-;interrupcao.c,128 :: 		void CustomChar() {
-;interrupcao.c,130 :: 		LCD_Cmd(64); //entra na
+;interrupcao.c,135 :: 		void CustomChar() {
+;interrupcao.c,137 :: 		LCD_Cmd(64); //entra na
 	MOVLW       64
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
-;interrupcao.c,131 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_0[i]); //grava 8 bytes na cgram ENDER 0 a 7  cgram
+;interrupcao.c,138 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_0[i]); //grava 8 bytes na cgram ENDER 0 a 7  cgram
 	CLRF        CustomChar_i_L0+0 
 L_CustomChar53:
 	MOVF        CustomChar_i_L0+0, 0 
@@ -376,7 +376,7 @@ L_CustomChar53:
 	INCF        CustomChar_i_L0+0, 1 
 	GOTO        L_CustomChar53
 L_CustomChar54:
-;interrupcao.c,132 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_1[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+;interrupcao.c,139 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_1[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
 	CLRF        CustomChar_i_L0+0 
 L_CustomChar56:
 	MOVF        CustomChar_i_L0+0, 0 
@@ -400,7 +400,7 @@ L_CustomChar56:
 	INCF        CustomChar_i_L0+0, 1 
 	GOTO        L_CustomChar56
 L_CustomChar57:
-;interrupcao.c,133 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+;interrupcao.c,140 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
 	CLRF        CustomChar_i_L0+0 
 L_CustomChar59:
 	MOVF        CustomChar_i_L0+0, 0 
@@ -424,7 +424,7 @@ L_CustomChar59:
 	INCF        CustomChar_i_L0+0, 1 
 	GOTO        L_CustomChar59
 L_CustomChar60:
-;interrupcao.c,134 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+;interrupcao.c,141 :: 		for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
 	CLRF        CustomChar_i_L0+0 
 L_CustomChar62:
 	MOVF        CustomChar_i_L0+0, 0 
@@ -448,18 +448,24 @@ L_CustomChar62:
 	INCF        CustomChar_i_L0+0, 1 
 	GOTO        L_CustomChar62
 L_CustomChar63:
-;interrupcao.c,135 :: 		LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
+;interrupcao.c,142 :: 		LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
 	MOVLW       2
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
-;interrupcao.c,136 :: 		}
+;interrupcao.c,143 :: 		}
 	RETURN      0
 ; end of _CustomChar
 
 _Create_World:
 
-;interrupcao.c,138 :: 		void Create_World() {
-;interrupcao.c,139 :: 		for(i = 0; i < sizeof(world); ++i) {
+;interrupcao.c,145 :: 		void Create_World() {
+;interrupcao.c,146 :: 		objects_location_x[PACMAN] = 0;
+	CLRF        _objects_location_x+0 
+	CLRF        _objects_location_x+1 
+;interrupcao.c,147 :: 		objects_location_y[PACMAN] = 0;
+	CLRF        _objects_location_y+0 
+	CLRF        _objects_location_y+1 
+;interrupcao.c,149 :: 		for(i = 0; i < sizeof(world); ++i) {
 	CLRF        _i+0 
 	CLRF        _i+1 
 L_Create_World65:
@@ -469,13 +475,13 @@ L_Create_World65:
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__Create_World87
+	GOTO        L__Create_World94
 	MOVLW       80
 	SUBWF       _i+0, 0 
-L__Create_World87:
+L__Create_World94:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_Create_World66
-;interrupcao.c,140 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
+;interrupcao.c,150 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
 	CLRF        _j+0 
 	CLRF        _j+1 
 L_Create_World68:
@@ -485,13 +491,13 @@ L_Create_World68:
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__Create_World88
+	GOTO        L__Create_World95
 	MOVLW       20
 	SUBWF       _j+0, 0 
-L__Create_World88:
+L__Create_World95:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_Create_World69
-;interrupcao.c,142 :: 		world[i][j] = '-';
+;interrupcao.c,152 :: 		world[i][j] = '-';
 	MOVF        _i+0, 0 
 	MOVWF       R0 
 	MOVF        _i+1, 0 
@@ -513,34 +519,48 @@ L__Create_World88:
 	MOVWF       FSR1H 
 	MOVLW       45
 	MOVWF       POSTINC1+0 
-;interrupcao.c,140 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
+;interrupcao.c,150 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
 	INFSNZ      _j+0, 1 
 	INCF        _j+1, 1 
-;interrupcao.c,143 :: 		}
+;interrupcao.c,153 :: 		}
 	GOTO        L_Create_World68
 L_Create_World69:
-;interrupcao.c,139 :: 		for(i = 0; i < sizeof(world); ++i) {
+;interrupcao.c,149 :: 		for(i = 0; i < sizeof(world); ++i) {
 	INFSNZ      _i+0, 1 
 	INCF        _i+1, 1 
-;interrupcao.c,144 :: 		}
+;interrupcao.c,154 :: 		}
 	GOTO        L_Create_World65
 L_Create_World66:
-;interrupcao.c,145 :: 		world[0][0] = 0;
-	CLRF        _world+0 
-;interrupcao.c,146 :: 		}
+;interrupcao.c,155 :: 		world[objects_location_x[PACMAN]][objects_location_y[PACMAN]] = pacman_orientation;
+	MOVF        _objects_location_x+0, 0 
+	MOVWF       R0 
+	MOVF        _objects_location_x+1, 0 
+	MOVWF       R1 
+	MOVLW       20
+	MOVWF       R4 
+	MOVLW       0
+	MOVWF       R5 
+	CALL        _Mul_16x16_U+0, 0
+	MOVLW       _world+0
+	ADDWF       R0, 1 
+	MOVLW       hi_addr(_world+0)
+	ADDWFC      R1, 1 
+	MOVF        _objects_location_y+0, 0 
+	ADDWF       R0, 0 
+	MOVWF       FSR1L 
+	MOVF        _objects_location_y+1, 0 
+	ADDWFC      R1, 0 
+	MOVWF       FSR1H 
+	MOVF        _pacman_orientation+0, 0 
+	MOVWF       POSTINC1+0 
+;interrupcao.c,156 :: 		}
 	RETURN      0
 ; end of _Create_World
 
 _Print_World:
 
-;interrupcao.c,148 :: 		void Print_World() {
-;interrupcao.c,149 :: 		UART1_Write_Text("fdsfs");
-	MOVLW       ?lstr1_interrupcao+0
-	MOVWF       FARG_UART1_Write_Text_uart_text+0 
-	MOVLW       hi_addr(?lstr1_interrupcao+0)
-	MOVWF       FARG_UART1_Write_Text_uart_text+1 
-	CALL        _UART1_Write_Text+0, 0
-;interrupcao.c,150 :: 		for(i = 0; i < sizeof(world); ++i) {
+;interrupcao.c,158 :: 		void Print_World() {
+;interrupcao.c,159 :: 		for(i = 0; i < sizeof(world); ++i) {
 	CLRF        _i+0 
 	CLRF        _i+1 
 L_Print_World71:
@@ -550,13 +570,13 @@ L_Print_World71:
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__Print_World89
+	GOTO        L__Print_World96
 	MOVLW       80
 	SUBWF       _i+0, 0 
-L__Print_World89:
+L__Print_World96:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_Print_World72
-;interrupcao.c,151 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
+;interrupcao.c,160 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
 	CLRF        _j+0 
 	CLRF        _j+1 
 L_Print_World74:
@@ -566,13 +586,13 @@ L_Print_World74:
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__Print_World90
+	GOTO        L__Print_World97
 	MOVLW       20
 	SUBWF       _j+0, 0 
-L__Print_World90:
+L__Print_World97:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_Print_World75
-;interrupcao.c,153 :: 		Lcd_Chr(i + 1, j + 1, world[i][j]);
+;interrupcao.c,162 :: 		Lcd_Chr(i + 1, j + 1, world[i][j]);
 	MOVF        _i+0, 0 
 	ADDLW       1
 	MOVWF       FARG_Lcd_Chr_row+0 
@@ -601,220 +621,309 @@ L__Print_World90:
 	MOVF        POSTINC0+0, 0 
 	MOVWF       FARG_Lcd_Chr_out_char+0 
 	CALL        _Lcd_Chr+0, 0
-;interrupcao.c,151 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
+;interrupcao.c,160 :: 		for(j = 0; j < sizeof(world[i]) ; ++j)
 	INFSNZ      _j+0, 1 
 	INCF        _j+1, 1 
-;interrupcao.c,154 :: 		}
+;interrupcao.c,163 :: 		}
 	GOTO        L_Print_World74
 L_Print_World75:
-;interrupcao.c,150 :: 		for(i = 0; i < sizeof(world); ++i) {
+;interrupcao.c,159 :: 		for(i = 0; i < sizeof(world); ++i) {
 	INFSNZ      _i+0, 1 
 	INCF        _i+1, 1 
-;interrupcao.c,155 :: 		}
+;interrupcao.c,164 :: 		}
 	GOTO        L_Print_World71
 L_Print_World72:
-;interrupcao.c,156 :: 		}
+;interrupcao.c,165 :: 		}
 	RETURN      0
 ; end of _Print_World
 
+_update_pacman_orientation:
+
+;interrupcao.c,167 :: 		update_pacman_orientation(short newX, short newY) {
+;interrupcao.c,168 :: 		if (newX > objects_location_x[PACMAN]) {
+	MOVLW       128
+	XORWF       _objects_location_x+1, 0 
+	MOVWF       R0 
+	MOVLW       128
+	BTFSC       FARG_update_pacman_orientation_newX+0, 7 
+	MOVLW       127
+	SUBWF       R0, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__update_pacman_orientation98
+	MOVF        FARG_update_pacman_orientation_newX+0, 0 
+	SUBWF       _objects_location_x+0, 0 
+L__update_pacman_orientation98:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_update_pacman_orientation77
+;interrupcao.c,169 :: 		pacman_orientation = 0;
+	CLRF        _pacman_orientation+0 
+;interrupcao.c,170 :: 		} else if (newX < objects_location_x[PACMAN]) {
+	GOTO        L_update_pacman_orientation78
+L_update_pacman_orientation77:
+	MOVLW       128
+	BTFSC       FARG_update_pacman_orientation_newX+0, 7 
+	MOVLW       127
+	MOVWF       R0 
+	MOVLW       128
+	XORWF       _objects_location_x+1, 0 
+	SUBWF       R0, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__update_pacman_orientation99
+	MOVF        _objects_location_x+0, 0 
+	SUBWF       FARG_update_pacman_orientation_newX+0, 0 
+L__update_pacman_orientation99:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_update_pacman_orientation79
+;interrupcao.c,171 :: 		pacman_orientation = 1;
+	MOVLW       1
+	MOVWF       _pacman_orientation+0 
+;interrupcao.c,172 :: 		} else if (newY > objects_location_y[PACMAN]) {
+	GOTO        L_update_pacman_orientation80
+L_update_pacman_orientation79:
+	MOVLW       128
+	XORWF       _objects_location_y+1, 0 
+	MOVWF       R0 
+	MOVLW       128
+	BTFSC       FARG_update_pacman_orientation_newY+0, 7 
+	MOVLW       127
+	SUBWF       R0, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__update_pacman_orientation100
+	MOVF        FARG_update_pacman_orientation_newY+0, 0 
+	SUBWF       _objects_location_y+0, 0 
+L__update_pacman_orientation100:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_update_pacman_orientation81
+;interrupcao.c,173 :: 		pacman_orientation = 2;
+	MOVLW       2
+	MOVWF       _pacman_orientation+0 
+;interrupcao.c,174 :: 		} else if (newY < objects_location_y[PACMAN]) {
+	GOTO        L_update_pacman_orientation82
+L_update_pacman_orientation81:
+	MOVLW       128
+	BTFSC       FARG_update_pacman_orientation_newY+0, 7 
+	MOVLW       127
+	MOVWF       R0 
+	MOVLW       128
+	XORWF       _objects_location_y+1, 0 
+	SUBWF       R0, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__update_pacman_orientation101
+	MOVF        _objects_location_y+0, 0 
+	SUBWF       FARG_update_pacman_orientation_newY+0, 0 
+L__update_pacman_orientation101:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_update_pacman_orientation83
+;interrupcao.c,175 :: 		pacman_orientation = 3;
+	MOVLW       3
+	MOVWF       _pacman_orientation+0 
+;interrupcao.c,176 :: 		}
+L_update_pacman_orientation83:
+L_update_pacman_orientation82:
+L_update_pacman_orientation80:
+L_update_pacman_orientation78:
+;interrupcao.c,177 :: 		}
+	RETURN      0
+; end of _update_pacman_orientation
+
 _Alert:
 
-;interrupcao.c,158 :: 		void Alert()
-;interrupcao.c,161 :: 		for(i=0; i<1; i++) {               // Move text to the right 4 times
+;interrupcao.c,179 :: 		void Alert()
+;interrupcao.c,182 :: 		for(i=0; i<1; i++) {               // Move text to the right 4 times
 	CLRF        Alert_i_L0+0 
 	CLRF        Alert_i_L0+1 
-L_Alert77:
+L_Alert84:
 	MOVLW       128
 	XORWF       Alert_i_L0+1, 0 
 	MOVWF       R0 
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__Alert91
+	GOTO        L__Alert102
 	MOVLW       1
 	SUBWF       Alert_i_L0+0, 0 
-L__Alert91:
+L__Alert102:
 	BTFSC       STATUS+0, 0 
-	GOTO        L_Alert78
-;interrupcao.c,162 :: 		Lcd_Cmd(_LCD_SHIFT_RIGHT);
+	GOTO        L_Alert85
+;interrupcao.c,183 :: 		Lcd_Cmd(_LCD_SHIFT_RIGHT);
 	MOVLW       28
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
-;interrupcao.c,163 :: 		Move_Delay();
+;interrupcao.c,184 :: 		Move_Delay();
 	CALL        _Move_Delay+0, 0
-;interrupcao.c,161 :: 		for(i=0; i<1; i++) {               // Move text to the right 4 times
+;interrupcao.c,182 :: 		for(i=0; i<1; i++) {               // Move text to the right 4 times
 	INFSNZ      Alert_i_L0+0, 1 
 	INCF        Alert_i_L0+1, 1 
-;interrupcao.c,164 :: 		}
-	GOTO        L_Alert77
-L_Alert78:
-;interrupcao.c,165 :: 		for(i=0; i<1; i++) {               // Move text to the left 4 times
+;interrupcao.c,185 :: 		}
+	GOTO        L_Alert84
+L_Alert85:
+;interrupcao.c,186 :: 		for(i=0; i<1; i++) {               // Move text to the left 4 times
 	CLRF        Alert_i_L0+0 
 	CLRF        Alert_i_L0+1 
-L_Alert80:
+L_Alert87:
 	MOVLW       128
 	XORWF       Alert_i_L0+1, 0 
 	MOVWF       R0 
 	MOVLW       128
 	SUBWF       R0, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__Alert92
+	GOTO        L__Alert103
 	MOVLW       1
 	SUBWF       Alert_i_L0+0, 0 
-L__Alert92:
+L__Alert103:
 	BTFSC       STATUS+0, 0 
-	GOTO        L_Alert81
-;interrupcao.c,166 :: 		Lcd_Cmd(_LCD_SHIFT_LEFT);
+	GOTO        L_Alert88
+;interrupcao.c,187 :: 		Lcd_Cmd(_LCD_SHIFT_LEFT);
 	MOVLW       24
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
-;interrupcao.c,167 :: 		Move_Delay();
+;interrupcao.c,188 :: 		Move_Delay();
 	CALL        _Move_Delay+0, 0
-;interrupcao.c,165 :: 		for(i=0; i<1; i++) {               // Move text to the left 4 times
+;interrupcao.c,186 :: 		for(i=0; i<1; i++) {               // Move text to the left 4 times
 	INFSNZ      Alert_i_L0+0, 1 
 	INCF        Alert_i_L0+1, 1 
-;interrupcao.c,168 :: 		}
-	GOTO        L_Alert80
-L_Alert81:
-;interrupcao.c,169 :: 		}
+;interrupcao.c,189 :: 		}
+	GOTO        L_Alert87
+L_Alert88:
+;interrupcao.c,190 :: 		}
 	RETURN      0
 ; end of _Alert
 
 _Write_EEPROM:
 
-;interrupcao.c,171 :: 		void Write_EEPROM(int END, int DADO)
-;interrupcao.c,173 :: 		I2C1_Start();           // issue I2C start signal
+;interrupcao.c,192 :: 		void Write_EEPROM(int END, int DADO)
+;interrupcao.c,194 :: 		I2C1_Start();           // issue I2C start signal
 	CALL        _I2C1_Start+0, 0
-;interrupcao.c,174 :: 		I2C1_Wr(0xA0);          // send byte via I2C  (device address + W)
+;interrupcao.c,195 :: 		I2C1_Wr(0xA0);          // send byte via I2C  (device address + W)
 	MOVLW       160
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,175 :: 		I2C1_Wr(END);             // send byte (address of EEPROM location)
+;interrupcao.c,196 :: 		I2C1_Wr(END);             // send byte (address of EEPROM location)
 	MOVF        FARG_Write_EEPROM_END+0, 0 
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,176 :: 		I2C1_Wr(DADO);          // send data (data to be written)
+;interrupcao.c,197 :: 		I2C1_Wr(DADO);          // send data (data to be written)
 	MOVF        FARG_Write_EEPROM_DADO+0, 0 
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,177 :: 		I2C1_Stop();            // issue I2C stop signal
+;interrupcao.c,198 :: 		I2C1_Stop();            // issue I2C stop signal
 	CALL        _I2C1_Stop+0, 0
-;interrupcao.c,178 :: 		delay_ms(10);
+;interrupcao.c,199 :: 		delay_ms(10);
 	MOVLW       26
 	MOVWF       R12, 0
 	MOVLW       248
 	MOVWF       R13, 0
-L_Write_EEPROM83:
+L_Write_EEPROM90:
 	DECFSZ      R13, 1, 0
-	BRA         L_Write_EEPROM83
+	BRA         L_Write_EEPROM90
 	DECFSZ      R12, 1, 0
-	BRA         L_Write_EEPROM83
+	BRA         L_Write_EEPROM90
 	NOP
-;interrupcao.c,179 :: 		}
+;interrupcao.c,200 :: 		}
 	RETURN      0
 ; end of _Write_EEPROM
 
 _Read_EEPROM:
 
-;interrupcao.c,181 :: 		int Read_EEPROM(int END)
-;interrupcao.c,184 :: 		I2C1_Start();           // issue I2C start signal
+;interrupcao.c,202 :: 		int Read_EEPROM(int END)
+;interrupcao.c,205 :: 		I2C1_Start();           // issue I2C start signal
 	CALL        _I2C1_Start+0, 0
-;interrupcao.c,185 :: 		I2C1_Wr(0xA0);          // send byte via I2C  (device address + W)
+;interrupcao.c,206 :: 		I2C1_Wr(0xA0);          // send byte via I2C  (device address + W)
 	MOVLW       160
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,186 :: 		I2C1_Wr(END);             // send byte (data address)
+;interrupcao.c,207 :: 		I2C1_Wr(END);             // send byte (data address)
 	MOVF        FARG_Read_EEPROM_END+0, 0 
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,187 :: 		I2C1_Repeated_Start();  // issue I2C signal repeated start
+;interrupcao.c,208 :: 		I2C1_Repeated_Start();  // issue I2C signal repeated start
 	CALL        _I2C1_Repeated_Start+0, 0
-;interrupcao.c,188 :: 		I2C1_Wr(0xA1);          // send byte (device address + R)
+;interrupcao.c,209 :: 		I2C1_Wr(0xA1);          // send byte (device address + R)
 	MOVLW       161
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,189 :: 		Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
+;interrupcao.c,210 :: 		Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
 	CLRF        FARG_I2C1_Rd_ack+0 
 	CALL        _I2C1_Rd+0, 0
 	MOVF        R0, 0 
 	MOVWF       Read_EEPROM_Dado_L0+0 
 	MOVLW       0
 	MOVWF       Read_EEPROM_Dado_L0+1 
-;interrupcao.c,190 :: 		I2C1_Stop();            // issue I2C stop signal
+;interrupcao.c,211 :: 		I2C1_Stop();            // issue I2C stop signal
 	CALL        _I2C1_Stop+0, 0
-;interrupcao.c,191 :: 		return(Dado);
+;interrupcao.c,212 :: 		return(Dado);
 	MOVF        Read_EEPROM_Dado_L0+0, 0 
 	MOVWF       R0 
 	MOVF        Read_EEPROM_Dado_L0+1, 0 
 	MOVWF       R1 
-;interrupcao.c,192 :: 		}
+;interrupcao.c,213 :: 		}
 	RETURN      0
 ; end of _Read_EEPROM
 
 _Write_RTC:
 
-;interrupcao.c,194 :: 		void Write_RTC(int END, int DADO)
-;interrupcao.c,196 :: 		I2C1_Start();           // issue I2C start signal
+;interrupcao.c,215 :: 		void Write_RTC(int END, int DADO)
+;interrupcao.c,217 :: 		I2C1_Start();           // issue I2C start signal
 	CALL        _I2C1_Start+0, 0
-;interrupcao.c,197 :: 		I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
+;interrupcao.c,218 :: 		I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
 	MOVLW       208
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,198 :: 		I2C1_Wr(END);             // send byte (address of EEPROM location)
+;interrupcao.c,219 :: 		I2C1_Wr(END);             // send byte (address of EEPROM location)
 	MOVF        FARG_Write_RTC_END+0, 0 
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,199 :: 		I2C1_Wr(DADO);          // send data (data to be written)
+;interrupcao.c,220 :: 		I2C1_Wr(DADO);          // send data (data to be written)
 	MOVF        FARG_Write_RTC_DADO+0, 0 
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,200 :: 		I2C1_Stop();            // issue I2C stop signal
+;interrupcao.c,221 :: 		I2C1_Stop();            // issue I2C stop signal
 	CALL        _I2C1_Stop+0, 0
-;interrupcao.c,201 :: 		}
+;interrupcao.c,222 :: 		}
 	RETURN      0
 ; end of _Write_RTC
 
 _Read_RTC:
 
-;interrupcao.c,203 :: 		int Read_RTC(int END)
-;interrupcao.c,206 :: 		I2C1_Start();           // issue I2C start signal
+;interrupcao.c,224 :: 		int Read_RTC(int END)
+;interrupcao.c,227 :: 		I2C1_Start();           // issue I2C start signal
 	CALL        _I2C1_Start+0, 0
-;interrupcao.c,207 :: 		I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
+;interrupcao.c,228 :: 		I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
 	MOVLW       208
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,208 :: 		I2C1_Wr(END);             // send byte (data address)
+;interrupcao.c,229 :: 		I2C1_Wr(END);             // send byte (data address)
 	MOVF        FARG_Read_RTC_END+0, 0 
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,209 :: 		I2C1_Repeated_Start();  // issue I2C signal repeated start
+;interrupcao.c,230 :: 		I2C1_Repeated_Start();  // issue I2C signal repeated start
 	CALL        _I2C1_Repeated_Start+0, 0
-;interrupcao.c,210 :: 		I2C1_Wr(0xD1);          // send byte (device address + R)
+;interrupcao.c,231 :: 		I2C1_Wr(0xD1);          // send byte (device address + R)
 	MOVLW       209
 	MOVWF       FARG_I2C1_Wr_data_+0 
 	CALL        _I2C1_Wr+0, 0
-;interrupcao.c,211 :: 		Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
+;interrupcao.c,232 :: 		Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
 	CLRF        FARG_I2C1_Rd_ack+0 
 	CALL        _I2C1_Rd+0, 0
 	MOVF        R0, 0 
 	MOVWF       Read_RTC_Dado_L0+0 
 	MOVLW       0
 	MOVWF       Read_RTC_Dado_L0+1 
-;interrupcao.c,212 :: 		I2C1_Stop();            // issue I2C stop signal
+;interrupcao.c,233 :: 		I2C1_Stop();            // issue I2C stop signal
 	CALL        _I2C1_Stop+0, 0
-;interrupcao.c,213 :: 		return(Dado);
+;interrupcao.c,234 :: 		return(Dado);
 	MOVF        Read_RTC_Dado_L0+0, 0 
 	MOVWF       R0 
 	MOVF        Read_RTC_Dado_L0+1, 0 
 	MOVWF       R1 
-;interrupcao.c,214 :: 		}
+;interrupcao.c,235 :: 		}
 	RETURN      0
 ; end of _Read_RTC
 
 _Transform_Time:
 
-;interrupcao.c,217 :: 		void Transform_Time(char *sec, char *min, char *hr) {
-;interrupcao.c,218 :: 		*sec = ((*sec & 0xF0) >> 4)*10 + (*sec & 0x0F);
+;interrupcao.c,238 :: 		void Transform_Time(char *sec, char *min, char *hr) {
+;interrupcao.c,239 :: 		*sec = ((*sec & 0xF0) >> 4)*10 + (*sec & 0x0F);
 	MOVFF       FARG_Transform_Time_sec+0, FSR0L
 	MOVFF       FARG_Transform_Time_sec+1, FSR0H
 	MOVF        POSTINC0+0, 0 
@@ -844,7 +953,7 @@ _Transform_Time:
 	MOVF        R0, 0 
 	ADDWF       R1, 0 
 	MOVWF       POSTINC1+0 
-;interrupcao.c,219 :: 		*min = ((*min & 0xF0) >> 4)*10 + (*min & 0x0F);
+;interrupcao.c,240 :: 		*min = ((*min & 0xF0) >> 4)*10 + (*min & 0x0F);
 	MOVFF       FARG_Transform_Time_min+0, FSR0L
 	MOVFF       FARG_Transform_Time_min+1, FSR0H
 	MOVF        POSTINC0+0, 0 
@@ -874,7 +983,7 @@ _Transform_Time:
 	MOVF        R0, 0 
 	ADDWF       R1, 0 
 	MOVWF       POSTINC1+0 
-;interrupcao.c,220 :: 		*hr = ((*hr & 0xF0) >> 4)*10 + (*hr & 0x0F);
+;interrupcao.c,241 :: 		*hr = ((*hr & 0xF0) >> 4)*10 + (*hr & 0x0F);
 	MOVFF       FARG_Transform_Time_hr+0, FSR0L
 	MOVFF       FARG_Transform_Time_hr+1, FSR0H
 	MOVF        POSTINC0+0, 0 
@@ -904,47 +1013,47 @@ _Transform_Time:
 	MOVF        R0, 0 
 	ADDWF       R1, 0 
 	MOVWF       POSTINC1+0 
-;interrupcao.c,221 :: 		}
+;interrupcao.c,242 :: 		}
 	RETURN      0
 ; end of _Transform_Time
 
 _main:
 
-;interrupcao.c,223 :: 		void main()
-;interrupcao.c,225 :: 		UART1_Init(19200);
+;interrupcao.c,244 :: 		void main()
+;interrupcao.c,246 :: 		UART1_Init(19200);
 	MOVLW       25
 	MOVWF       SPBRG+0 
 	BSF         TXSTA+0, 2, 0
 	CALL        _UART1_Init+0, 0
-;interrupcao.c,226 :: 		I2C1_Init(100000);// i2c para acessar ID = D0h  = RTC
+;interrupcao.c,247 :: 		I2C1_Init(100000);// i2c para acessar ID = D0h  = RTC
 	MOVLW       20
 	MOVWF       SSPADD+0 
 	CALL        _I2C1_Init+0, 0
-;interrupcao.c,228 :: 		ADCON1=0B00001110;
+;interrupcao.c,249 :: 		ADCON1=0B00001110;
 	MOVLW       14
 	MOVWF       ADCON1+0 
-;interrupcao.c,229 :: 		TRISB = 0B00001111;
+;interrupcao.c,250 :: 		TRISB = 0B00001111;
 	MOVLW       15
 	MOVWF       TRISB+0 
-;interrupcao.c,230 :: 		PORTB = 0B00000000;
+;interrupcao.c,251 :: 		PORTB = 0B00000000;
 	CLRF        PORTB+0 
-;interrupcao.c,231 :: 		Lcd_Init();
+;interrupcao.c,252 :: 		Lcd_Init();
 	CALL        _Lcd_Init+0, 0
-;interrupcao.c,233 :: 		TRISA=0B00100001;
+;interrupcao.c,254 :: 		TRISA=0B00100001;
 	MOVLW       33
 	MOVWF       TRISA+0 
-;interrupcao.c,234 :: 		InitTimer2();
+;interrupcao.c,255 :: 		InitTimer2();
 	CALL        _InitTimer2+0, 0
-;interrupcao.c,236 :: 		Lcd_Cmd(_LCD_CURSOR_OFF);
+;interrupcao.c,257 :: 		Lcd_Cmd(_LCD_CURSOR_OFF);
 	MOVLW       12
 	MOVWF       FARG_Lcd_Cmd_out_char+0 
 	CALL        _Lcd_Cmd+0, 0
-;interrupcao.c,237 :: 		CustomChar();
+;interrupcao.c,258 :: 		CustomChar();
 	CALL        _CustomChar+0, 0
-;interrupcao.c,239 :: 		Create_World();
+;interrupcao.c,260 :: 		Create_World();
 	CALL        _Create_World+0, 0
-;interrupcao.c,240 :: 		Print_World();
+;interrupcao.c,261 :: 		Print_World();
 	CALL        _Print_World+0, 0
-;interrupcao.c,306 :: 		}
+;interrupcao.c,327 :: 		}
 	GOTO        $+0
 ; end of _main

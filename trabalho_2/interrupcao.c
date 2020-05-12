@@ -112,9 +112,16 @@ void Move_Delay() {                  // Function used for text moving
 
 const int WORLD_WIDTH = 20;
 const int WORLD_HEIGHT = 4;
+const int GHOST_COUNT = 0;
+const int PACMAN = 0;
+
 int i = 0;
 int j = 0;
 char world[WORLD_HEIGHT][WORLD_WIDTH];
+int objects_location_x[GHOST_COUNT + 1];
+int objects_location_y[GHOST_COUNT + 1];
+
+char pacman_orientation = 0;
 
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
@@ -136,13 +143,16 @@ void CustomChar() {
 }
 
 void Create_World() {
+    objects_location_x[PACMAN] = 0;
+    objects_location_y[PACMAN] = 0;
+    
     for(i = 0; i < sizeof(world); ++i) {
        for(j = 0; j < sizeof(world[i]) ; ++j)
        {
          world[i][j] = '-';
        }
     }
-    world[0][0] = 0;
+    world[objects_location_x[PACMAN]][objects_location_y[PACMAN]] = pacman_orientation;
 }
 
 void Print_World() {
@@ -152,6 +162,18 @@ void Print_World() {
          Lcd_Chr(i + 1, j + 1, world[i][j]);
        }
     }
+}
+
+update_pacman_orientation(short newX, short newY) {
+  if (newX > objects_location_x[PACMAN]) {
+    pacman_orientation = 0;
+  } else if (newX < objects_location_x[PACMAN]) {
+    pacman_orientation = 1;
+  } else if (newY > objects_location_y[PACMAN]) {
+    pacman_orientation = 2;
+  } else if (newY < objects_location_y[PACMAN]) {
+    pacman_orientation = 3;
+  }
 }
 
 void Alert()

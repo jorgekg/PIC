@@ -23,8 +23,6 @@ main
 	Create_World
 		Mul_16x16_U
 	Print_World
-		UART1_Write_Text
-			UART1_Write
 		Mul_16x16_U
 		Lcd_Chr
 			Lcd_Cmd

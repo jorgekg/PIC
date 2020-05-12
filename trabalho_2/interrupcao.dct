@@ -548,6 +548,7 @@ fullbits
 gcen
 gcen_bit
 get_fosc_khz
+ghost_count
 gie
 gie_bit
 gieh
@@ -931,6 +932,8 @@ nrm4032
 obf
 obf_bit
 obf_trise_bit
+objects_location_x
+objects_location_y
 oerr
 oerr_bit
 osccon
@@ -960,6 +963,8 @@ p1m0
 p1m0_bit
 p1m1
 p1m1_bit
+pacman
+pacman_orientation
 pc
 pcfg0
 pcfg0_bit
@@ -1793,6 +1798,7 @@ uart1_tx_idle
 uart1_write
 uart1_write_text
 uldiv
+update_pacman_orientation
 vcfg0
 vcfg0_bit
 vcfg1
