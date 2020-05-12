@@ -153,14 +153,6 @@ void Create_World() {
  world[i][j] = '-';
  }
  }
- inttostr(TXT, objects_location_x[PACMAN]);
- UART1_Write_Text(TXT);
- UART1_Write(13);
- UART1_Write(10);
- inttostr(TXT, objects_location_y[PACMAN]);
- UART1_Write_Text(TXT);
- UART1_Write(13);
- UART1_Write(10);
  world[objects_location_x[PACMAN]][objects_location_y[PACMAN]] = pacman_orientation;
 }
 
@@ -168,6 +160,17 @@ void Print_World() {
  for(i = 0; i < WORLD_WIDTH; ++i) {
  for(j = 0; j < WORLD_HEIGHT ; ++j)
  {
+ inttostr(j, TXT2);
+ UART1_Write_Text(TXT2);
+ UART1_Write(' ');
+ inttostr(i, TXT2);
+ UART1_Write_Text(TXT2);
+ UART1_Write(' ');
+ inttostr(world[i][j], TXT2);
+ UART1_Write_Text(TXT2);
+ UART1_Write(13);
+ UART1_Write(10);
+
  Lcd_Chr(j + 1, i + 1, world[i][j]);
  }
  }
@@ -268,5 +271,5 @@ void main()
 
  Create_World();
  Print_World();
-#line 335 "C:/git/pic-jorge/trabalho_2/interrupcao.c"
+#line 338 "C:/git/pic-jorge/trabalho_2/interrupcao.c"
 }
