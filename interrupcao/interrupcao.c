@@ -237,14 +237,14 @@ void main()
           }
         Lcd_Out(1, 1, "HORA: ");
         Lcd_Out(2, 1, "QTD PECA Prod POR MIN:");
-        Lcd_Out(3, 1, "META: ");
+        Lcd_Out(3, 1, "META:");
         Lcd_Out(3, 5, "PROD:");
         
         inttostr(peca_por_min, TXT);
-                 Lcd_Out(3, 10, TXT);
+                 Lcd_Out(3, 9, TXT);
                 inttostr(meta, TXT);
-                Lcd_Out(3, 6, TXT);
-
+                Lcd_Out(3, 5, TXT);
+        cnt2 = 0;
         while(1)
         {
                 sss = Read_RTC(0); //le segundos
@@ -253,6 +253,8 @@ void main()
                 Transform_Time(&sss,&mmm,&hhh);
                 sprintf(HORA_TXT, "%02d:%02d:%02d ",hhh,mmm,sss);
                 lcd_Out(1, 7, HORA_TXT);
+                inttostr(cnt2, TXT);
+                Lcd_Out(3, 15, TXT);
                 if (peca_por_min >= meta) {
                    lcd_Out(4, 1, "META ATINGIDA ");
                    Lcd_Chr_Cp(0);

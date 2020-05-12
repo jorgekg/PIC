@@ -904,7 +904,7 @@ L_main75:
 	MOVLW       hi_addr(?lstr4_interrupcao+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;interrupcao.c,240 :: 		Lcd_Out(3, 1, "META: ");
+;interrupcao.c,240 :: 		Lcd_Out(3, 1, "META:");
 	MOVLW       3
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       1
@@ -934,10 +934,10 @@ L_main75:
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_IntToStr_output+1 
 	CALL        _IntToStr+0, 0
-;interrupcao.c,244 :: 		Lcd_Out(3, 10, TXT);
+;interrupcao.c,244 :: 		Lcd_Out(3, 9, TXT);
 	MOVLW       3
 	MOVWF       FARG_Lcd_Out_row+0 
-	MOVLW       10
+	MOVLW       9
 	MOVWF       FARG_Lcd_Out_column+0 
 	MOVLW       _TXT+0
 	MOVWF       FARG_Lcd_Out_text+0 
@@ -954,16 +954,19 @@ L_main75:
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_IntToStr_output+1 
 	CALL        _IntToStr+0, 0
-;interrupcao.c,246 :: 		Lcd_Out(3, 6, TXT);
+;interrupcao.c,246 :: 		Lcd_Out(3, 5, TXT);
 	MOVLW       3
 	MOVWF       FARG_Lcd_Out_row+0 
-	MOVLW       6
+	MOVLW       5
 	MOVWF       FARG_Lcd_Out_column+0 
 	MOVLW       _TXT+0
 	MOVWF       FARG_Lcd_Out_text+0 
 	MOVLW       hi_addr(_TXT+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
+;interrupcao.c,247 :: 		cnt2 = 0;
+	CLRF        _cnt2+0 
+	CLRF        _cnt2+1 
 ;interrupcao.c,248 :: 		while(1)
 L_main76:
 ;interrupcao.c,250 :: 		sss = Read_RTC(0); //le segundos
@@ -1042,7 +1045,27 @@ L_main76:
 	MOVLW       hi_addr(_HORA_TXT+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;interrupcao.c,256 :: 		if (peca_por_min >= meta) {
+;interrupcao.c,256 :: 		inttostr(cnt2, TXT);
+	MOVF        _cnt2+0, 0 
+	MOVWF       FARG_IntToStr_input+0 
+	MOVF        _cnt2+1, 0 
+	MOVWF       FARG_IntToStr_input+1 
+	MOVLW       _TXT+0
+	MOVWF       FARG_IntToStr_output+0 
+	MOVLW       hi_addr(_TXT+0)
+	MOVWF       FARG_IntToStr_output+1 
+	CALL        _IntToStr+0, 0
+;interrupcao.c,257 :: 		Lcd_Out(3, 15, TXT);
+	MOVLW       3
+	MOVWF       FARG_Lcd_Out_row+0 
+	MOVLW       15
+	MOVWF       FARG_Lcd_Out_column+0 
+	MOVLW       _TXT+0
+	MOVWF       FARG_Lcd_Out_text+0 
+	MOVLW       hi_addr(_TXT+0)
+	MOVWF       FARG_Lcd_Out_text+1 
+	CALL        _Lcd_Out+0, 0
+;interrupcao.c,258 :: 		if (peca_por_min >= meta) {
 	MOVLW       128
 	XORWF       _peca_por_min+1, 0 
 	MOVWF       R0 
@@ -1056,7 +1079,7 @@ L_main76:
 L__main86:
 	BTFSS       STATUS+0, 0 
 	GOTO        L_main78
-;interrupcao.c,257 :: 		lcd_Out(4, 1, "META ATINGIDA ");
+;interrupcao.c,259 :: 		lcd_Out(4, 1, "META ATINGIDA ");
 	MOVLW       4
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       1
@@ -1066,13 +1089,13 @@ L__main86:
 	MOVLW       hi_addr(?lstr8_interrupcao+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;interrupcao.c,258 :: 		Lcd_Chr_Cp(0);
+;interrupcao.c,260 :: 		Lcd_Chr_Cp(0);
 	CLRF        FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;interrupcao.c,259 :: 		} else {
+;interrupcao.c,261 :: 		} else {
 	GOTO        L_main79
 L_main78:
-;interrupcao.c,260 :: 		lcd_Out(4, 1, "ABAIXO DA META");
+;interrupcao.c,262 :: 		lcd_Out(4, 1, "ABAIXO DA META");
 	MOVLW       4
 	MOVWF       FARG_Lcd_Out_row+0 
 	MOVLW       1
@@ -1082,14 +1105,14 @@ L_main78:
 	MOVLW       hi_addr(?lstr9_interrupcao+0)
 	MOVWF       FARG_Lcd_Out_text+1 
 	CALL        _Lcd_Out+0, 0
-;interrupcao.c,261 :: 		Lcd_Chr_Cp(1);
+;interrupcao.c,263 :: 		Lcd_Chr_Cp(1);
 	MOVLW       1
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;interrupcao.c,262 :: 		}
-L_main79:
-;interrupcao.c,263 :: 		}
-	GOTO        L_main76
 ;interrupcao.c,264 :: 		}
+L_main79:
+;interrupcao.c,265 :: 		}
+	GOTO        L_main76
+;interrupcao.c,266 :: 		}
 	GOTO        $+0
 ; end of _main

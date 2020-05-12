@@ -19,9 +19,8 @@ Count=0
 [IMAGES]
 Count=0
 [OPENED_FILES]
-Count=2
+Count=1
 File0=interrupcao.c
-File1=..\lcd2-microc\led.c
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
