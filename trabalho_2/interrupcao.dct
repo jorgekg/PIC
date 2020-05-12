@@ -355,6 +355,8 @@ cfgs
 cfgs_bit
 character_0
 character_1
+character_2
+character_3
 character8x7
 chs0
 chs0_bit
@@ -392,6 +394,7 @@ compare_double
 cos
 cose3
 cosh
+create_world
 cren
 cren_bit
 critic_hhh
@@ -595,6 +598,7 @@ hlvdl2_bit
 hlvdl3
 hlvdl3_bit
 hora_txt
+i
 i2c1_init
 i2c1_is_idle
 i2c1_rd
@@ -693,6 +697,7 @@ isxdigit
 iteracao
 ivrst
 ivrst_bit
+j
 kbi0
 kbi0_bit
 kbi1
@@ -1031,6 +1036,7 @@ pr2
 preinc0
 preinc1
 preinc2
+print_world
 printout
 prod
 prodh
@@ -1803,6 +1809,9 @@ wcol_bit
 wdtcon
 word2double
 wordtostr
+world
+world_height
+world_width
 wr
 wr_bit
 wr_eecon1_bit

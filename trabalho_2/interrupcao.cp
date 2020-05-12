@@ -1,4 +1,4 @@
-#line 1 "C:/Users/jorge/git/PIC/interrupcao/interrupcao.c"
+#line 1 "C:/git/pic-jorge/trabalho_2/interrupcao.c"
 
 sbit LCD_RS at RE0_bit;
 sbit LCD_EN at RE1_bit;
@@ -111,15 +111,49 @@ void Move_Delay() {
  Delay_ms(100);
 }
 
-const char character_0[] = {0,0,4,14,31,14,14,14};
-const char character_1[] = {14,14,14,31,14,4,0,0};
+const int WORLD_WIDTH = 20;
+const int WORLD_HEIGHT = 4;
+int i = 0;
+int j = 0;
+char world[WORLD_HEIGHT][WORLD_WIDTH];
+
+
+const char character_0[] = {31,30,28,24,24,28,30,31};
+
+const char character_1[] = {31,15,7,3,3,7,15,31};
+
+const char character_2[] = {31,31,31,27,17,0,0,0};
+
+const char character_3[] = {0,0,0,17,27,31,31,31};
 
 void CustomChar() {
  char i;
  LCD_Cmd(64);
  for (i = 0; i<=7; i++) LCD_Chr_Cp(character_0[i]);
  for (i = 0; i<=7; i++) LCD_Chr_Cp(character_1[i]);
+ for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]);
+ for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]);
  LCD_Cmd(_LCD_RETURN_HOME);
+}
+
+void Create_World() {
+ for(i = 0; i < sizeof(world); ++i) {
+ for(j = 0; j < sizeof(world[i]) ; ++j)
+ {
+ world[i][j] = '-';
+ }
+ }
+ world[0][0] = 0;
+}
+
+void Print_World() {
+ UART1_Write_Text("fdsfs");
+ for(i = 0; i < sizeof(world); ++i) {
+ for(j = 0; j < sizeof(world[i]) ; ++j)
+ {
+ Lcd_Chr(i + 1, j + 1, world[i][j]);
+ }
+ }
 }
 
 void Alert()
@@ -202,66 +236,8 @@ void main()
 
  Lcd_Cmd(_LCD_CURSOR_OFF);
  CustomChar();
- Lcd_Out(1, 2, "DIGITE A SENHA");
- while(1)
- {
- Tecla = Le_Teclado() ;
- if (Tecla == '=') {
- break;
- }
- if (Tecla == '0') {
- Write_EEPROM(0, 0xFF);
- break;
- }
 
- }
- if (Read_EEPROM(0) == 0xFF) {
- Lcd_Out(1, 2, "DIGITE A META");
- while(1)
- {
- Tecla = Le_Teclado() ;
- if (Tecla == '=') {
- meta = atoi(tempTeclas);
- Write_EEPROM(0, meta);
- cnt2 = 0;
- cnt = 0;
- break;
- }
- if(!(Tecla==255)) {
- tempTeclas[iteracao] = Tecla;
- iteracao = iteracao + 1;
- }
- lcd_Out(2, 5, tempTeclas);
- }
- } else {
- meta = Read_EEPROM(0);
- }
- Lcd_Out(1, 1, "HORA: ");
- Lcd_Out(2, 1, "QTD PECA Prod POR MIN:");
- Lcd_Out(3, 1, "META:");
- Lcd_Out(3, 5, "PROD:");
-
- inttostr(peca_por_min, TXT);
- Lcd_Out(3, 9, TXT);
- inttostr(meta, TXT);
- Lcd_Out(3, 5, TXT);
- cnt2 = 0;
- while(1)
- {
- sss = Read_RTC(0);
- mmm = Read_RTC(1);
- hhh = Read_RTC(2);
- Transform_Time(&sss,&mmm,&hhh);
- sprintf(HORA_TXT, "%02d:%02d:%02d ",hhh,mmm,sss);
- lcd_Out(1, 7, HORA_TXT);
- inttostr(cnt2, TXT);
- Lcd_Out(3, 15, TXT);
- if (peca_por_min >= meta) {
- lcd_Out(4, 1, "META ATINGIDA ");
- Lcd_Chr_Cp(0);
- } else {
- lcd_Out(4, 1, "ABAIXO DA META");
- Lcd_Chr_Cp(1);
- }
- }
+ Create_World();
+ Print_World();
+#line 306 "C:/git/pic-jorge/trabalho_2/interrupcao.c"
 }

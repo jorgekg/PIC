@@ -24,10 +24,13 @@ File0=interrupcao.c
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=3
-Path0=C:\Users\jorge\OneDrive\햞ea de Trabalho\mikroC PRO for PIC\defs\
-Path1=C:\Users\jorge\OneDrive\햞ea de Trabalho\mikroC PRO for PIC\uses\P18\
-Path2=C:\Users\jorge\git\PIC\interrupcao\
+Count=6
+Path0=C:\Users\adrin\Documents\Faculdade\Microcontrolador PIC\topicos\mikroC PRO for PIC\defs\
+Path1=C:\Users\adrin\Documents\Faculdade\Microcontrolador PIC\topicos\mikroC PRO for PIC\uses\P18\
+Path2=C:\git\pic-jorge\trabalho_2\
+Path3=C:\Users\jorge\OneDrive\햞ea de Trabalho\mikroC PRO for PIC\defs\
+Path4=C:\Users\jorge\OneDrive\햞ea de Trabalho\mikroC PRO for PIC\uses\P18\
+Path5=C:\Users\jorge\git\PIC\interrupcao\
 [HEADER_PATH]
 Count=0
 [HEADERS]

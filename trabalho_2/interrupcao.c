@@ -110,6 +110,12 @@ void Move_Delay() {                  // Function used for text moving
   Delay_ms(100);                     // You can change the moving speed here
 }
 
+const int WORLD_WIDTH = 20;
+const int WORLD_HEIGHT = 4;
+int i = 0;
+int j = 0;
+char world[WORLD_HEIGHT][WORLD_WIDTH];
+
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
 // Esquerda
@@ -127,6 +133,25 @@ void CustomChar() {
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
+}
+
+void Create_World() {
+    for(i = 0; i < sizeof(world); ++i) {
+       for(j = 0; j < sizeof(world[i]) ; ++j)
+       {
+         world[i][j] = '-';
+       }
+    }
+    world[0][0] = 0;
+}
+
+void Print_World() {
+    for(i = 0; i < sizeof(world); ++i) {
+       for(j = 0; j < sizeof(world[i]) ; ++j)
+       {
+         Lcd_Chr(i + 1, j + 1, world[i][j]);
+       }
+    }
 }
 
 void Alert()
@@ -209,6 +234,12 @@ void main()
 
         Lcd_Cmd(_LCD_CURSOR_OFF);
         CustomChar();
+
+        Create_World();
+        Print_World();
+
+
+        /*
         Lcd_Out(1, 2, "DIGITE A SENHA");
          while(1)
             {
@@ -270,5 +301,5 @@ void main()
                    lcd_Out(4, 1, "ABAIXO DA META");
                    Lcd_Chr_Cp(1);
                 }
-        }
+        }*/
 }
