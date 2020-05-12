@@ -6,13 +6,16 @@ warning: 0	1501	Specified search path does not exist: 'C:\Users\jorge\git\PIC\in
 hint: 0	1138	Available RAM: 3947 [bytes], Available ROM: 65536 [bytes]	 
 diagnostics: 0	126	All files Preprocessed in 109 ms	 
 diagnostics: 0	122	Compilation Started	interrupcao.c
-warning: 180	1503	Result is not defined in function: 'update_pacman_orientation'	interrupcao.c
-warning: 249	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	interrupcao.c
-diagnostics: 330	123	Compiled Successfully	interrupcao.c
-diagnostics: 0	127	All files Compiled in 657 ms	 
-hint: 0	1143	Used RAM (bytes): 119 (3%)  Free RAM (bytes): 3828 (97%)	Used RAM (bytes): 119 (3%)  Free RAM (bytes): 3828 (97%)
-hint: 0	1143	Used ROM (bytes): 1424 (2%)  Free ROM (bytes): 64112 (98%)	Used ROM (bytes): 1424 (2%)  Free ROM (bytes): 64112 (98%)
+warning: 155	1506	Implicit conversion of pointer to int	interrupcao.c
+warning: 155	1508	Implicit conversion of int to ptr	interrupcao.c
+warning: 159	1506	Implicit conversion of pointer to int	interrupcao.c
+warning: 159	1508	Implicit conversion of int to ptr	interrupcao.c
+warning: 254	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	interrupcao.c
+diagnostics: 335	123	Compiled Successfully	interrupcao.c
+diagnostics: 0	127	All files Compiled in 516 ms	 
+hint: 0	1143	Used RAM (bytes): 139 (4%)  Free RAM (bytes): 3808 (96%)	Used RAM (bytes): 139 (4%)  Free RAM (bytes): 3808 (96%)
+hint: 0	1143	Used ROM (bytes): 1962 (3%)  Free ROM (bytes): 63574 (97%)	Used ROM (bytes): 1962 (3%)  Free ROM (bytes): 63574 (97%)
 diagnostics: 0	125	Project Linked Successfully	interrupcao.mcppi
-diagnostics: 0	128	Linked in 1718 ms	 
-diagnostics: 0	129	Project 'interrupcao.mcppi' completed: 3625 ms	 
-diagnostics: 0	103	Finished successfully: 12 mai 2020, 20:09:26	interrupcao.mcppi
+diagnostics: 0	128	Linked in 1719 ms	 
+diagnostics: 0	129	Project 'interrupcao.mcppi' completed: 3906 ms	 
+diagnostics: 0	103	Finished successfully: 12 mai 2020, 20:17:58	interrupcao.mcppi

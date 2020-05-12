@@ -22,8 +22,13 @@ main
 				Delay_50us
 	Create_World
 		Mul_16x16_U
-	Print_World
+		IntToStr
+			WordToStr
+				Div_16x16_U
+		UART1_Write_Text
+			UART1_Write
 		UART1_Write
+	Print_World
 		Mul_16x16_U
 		Lcd_Chr
 			Lcd_Cmd

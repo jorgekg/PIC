@@ -146,28 +146,33 @@ void Create_World() {
     objects_location_x[PACMAN] = 0;
     objects_location_y[PACMAN] = 0;
     
-    for(i = 0; i < sizeof(world); ++i) {
-       for(j = 0; j < sizeof(world[i]) ; ++j)
+    for(i = 0; i < WORLD_WIDTH; ++i) {
+       for(j = 0; j < WORLD_HEIGHT ; ++j)
        {
          world[i][j] = '-';
        }
     }
+    inttostr(TXT, objects_location_x[PACMAN]);
+    UART1_Write_Text(TXT);
+    UART1_Write(13);
+    UART1_Write(10);
+    inttostr(TXT, objects_location_y[PACMAN]);
+    UART1_Write_Text(TXT);
+    UART1_Write(13);
+    UART1_Write(10);
     world[objects_location_x[PACMAN]][objects_location_y[PACMAN]] = pacman_orientation;
 }
 
 void Print_World() {
-    for(i = 0; i < sizeof(world); ++i) {
-       for(j = 0; j < sizeof(world[i]) ; ++j)
+    for(i = 0; i < WORLD_WIDTH; ++i) {
+       for(j = 0; j < WORLD_HEIGHT ; ++j)
        {
-         UART1_Write('a');
-         UART1_Write(13);
-         UART1_Write(10);
-         Lcd_Chr(i + 1, j + 1, world[i][j]);
+         Lcd_Chr(j + 1, i + 1, world[i][j]);
        }
     }
 }
 
-update_pacman_orientation(short newX, short newY) {
+void update_pacman_orientation(short newX, short newY) {
   if (newX > objects_location_x[PACMAN]) {
     pacman_orientation = 0;
   } else if (newX < objects_location_x[PACMAN]) {
