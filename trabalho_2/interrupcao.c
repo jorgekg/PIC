@@ -110,14 +110,22 @@ void Move_Delay() {                  // Function used for text moving
   Delay_ms(100);                     // You can change the moving speed here
 }
 
-const char character_0[] = {0,0,4,14,31,14,14,14};
-const char character_1[] = {14,14,14,31,14,4,0,0};
+// Direita
+const char character_0[] = {31,30,28,24,24,28,30,31};
+// Esquerda
+const char character_1[] = {31,15,7,3,3,7,15,31};
+// Abaixo
+const char character_2[] = {31,31,31,27,17,0,0,0};
+// Acima
+const char character_3[] = {0,0,0,17,27,31,31,31};
 
 void CustomChar() {
   char i;
     LCD_Cmd(64); //entra na
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_0[i]); //grava 8 bytes na cgram ENDER 0 a 7  cgram
-        for (i = 0; i<=7; i++) LCD_Chr_Cp(character_1[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+    for (i = 0; i<=7; i++) LCD_Chr_Cp(character_1[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+    for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+    for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
 }
 
