@@ -67,7 +67,7 @@ void interrupt() {
   }
 }
 
-short Le_Teclado()
+char Le_Teclado()
 {
   PORTD = 0B00010000; // VOCÊ SELECIONOU LA
   if (PORTA.RA5 == 1) {
@@ -141,7 +141,7 @@ short Le_Teclado()
     return '+';
   }
 
-  return 255;
+  return (char) 255;
 }
 
 void Pula_Linha(void)
@@ -162,9 +162,9 @@ int i = 0;
 int j = 0;
 int pacman_x = 0;
 int pacman_y = 0;
-char world[WORLD_HEIGHT][WORLD_WIDTH];
 
-char pacman_orientation = 0;
+char world[WORLD_HEIGHT][WORLD_WIDTH];
+char pacman_orientation = (char) 0;
 
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
@@ -192,12 +192,12 @@ void Create_World() {
          world[i][j] = ' ';
        }
     }
-    world[pacman_x][pacman_y] = pacman_orientation;
+    world[pacman_x][pacman_y] = (char) pacman_orientation;
 }
 
 void Print_World() {
     for(i = 0; i < WORLD_WIDTH; ++i) {
-       for(j = 0; j < WORLD_HEIGHT ; ++j)
+       for(j = 0; j < WORLD_HEIGHT; ++j)
        {
          Lcd_Chr(j + 1, i + 1, world[i][j]);
        }
@@ -206,30 +206,29 @@ void Print_World() {
 
 void update_pacman_orientation(int newX, int newY) {
   if (newX > pacman_x) {
-    pacman_orientation = 0;
+    pacman_orientation = (char) 0;
   } else if (newX < pacman_x) {
-    pacman_orientation = 1;
+    pacman_orientation = (char) 1;
   } else if (newY > pacman_y) {
-    pacman_orientation = 2;
+    pacman_orientation = (char) 2;
   } else if (newY < pacman_y) {
-    pacman_orientation = 3;
+    pacman_orientation = (char) 3;
   }
 }
 
 int newPacman_x = 0;
 int newPacman_y = 0;
-
-void update_pacman(char* direction) {
-  if (strcmp(direction, "baixo")) {
+void update_pacman(char direction[]) {
+  if (strcmp(direction, "cima") == 0) {
     newPacman_x = pacman_x;
     newPacman_y = pacman_y - 1;
-  } else if (strcmp(direction, "cima")) {
+  } else if (strcmp(direction, "baixo") == 0) {
     newPacman_x = pacman_x;
     newPacman_y = pacman_y + 1;
-  } else if (strcmp(direction, "direita")) {
+  } else if (strcmp(direction, "direita") == 0) {
     newPacman_x = pacman_x + 1;
     newPacman_y = pacman_y;
-  } else if (strcmp(direction, "esquerda")) {
+  } else if (strcmp(direction, "esquerda") == 0) {
     newPacman_x = pacman_x - 1;
     newPacman_y = pacman_y;
   }
@@ -241,9 +240,9 @@ void update_pacman(char* direction) {
 
   if (newPacman_y < 0) newPacman_y = WORLD_HEIGHT - 1;
   if (newPacman_y >= WORLD_HEIGHT) newPacman_y = 0;
-
   world[pacman_x][pacman_y] = ' ';
-  world[newPacman_x][newPacman_y] = pacman_orientation;
+  world[newPacman_x][newPacman_y] = (char) pacman_orientation;
+  
   pacman_x = newPacman_x;
   pacman_y = newPacman_y;
 }
@@ -354,7 +353,7 @@ void Le_Entrada_Cp(char slot[], int row, int column) {
 }
 
 int meta = 0;
-char command;
+char command = 0;
 char HORA_TXT[20];
 void main()
  {
@@ -370,15 +369,19 @@ void main()
         CustomChar();
         
         Create_World();
-        // InitTimer2();
-        
-        Print_World();
+        InitTimer2();
         
         while (1) {
             command = Le_Teclado();
             
             if (command == '8') {
               update_pacman("cima");
+            } else if (command == '2') {
+              update_pacman("baixo");
+            } else if (command == '6') {
+              update_pacman("direita");
+            } else if (command == '4') {
+              update_pacman("esquerda");
             }
             
             Print_World();
