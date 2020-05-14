@@ -1,3 +1,7 @@
+const int WORLD_WIDTH = 20;
+const int WORLD_HEIGHT = 4;
+int world[WORLD_HEIGHT + 1][WORLD_WIDTH + 1];
+
 // Lcd pinout settings
 sbit LCD_RS at RE0_bit;
 sbit LCD_EN at RE1_bit;
@@ -39,8 +43,6 @@ void InitTimer2(){
   INTCON         = 0xD0;  //INTCON = 1100 0000 (HABILITA TMR2 INTERRUPT E INT0 INTERRUPT)
 }
 
-int total_pecas = 0;
-int pecas_parcial = 0;
 void external_interrupt() {
     PORTA.F2 = ~PORTA.F2;
 }
@@ -154,16 +156,24 @@ void Move_Delay() {                  // Function used for text moving
   Delay_ms(100);                     // You can change the moving speed here
 }
 
-const int WORLD_WIDTH = 20;
-const int WORLD_HEIGHT = 4;
+
 const int GHOST_COUNT = 0;
+
+// Notes
+const int DO1 = 65;
+const int RE_1 = 73;
+const int MI1 = 82;
+const int FA1 = 87;
+const int SOL1 = 98;
+const int LA1 = 110;
+const int SI1 = 123;
+const int DO2 = 131;
 
 int i = 0;
 int j = 0;
 int pacman_x = 0;
 int pacman_y = 0;
 
-char world[WORLD_HEIGHT][WORLD_WIDTH];
 char pacman_orientation = (char) 0;
 
 // Direita
@@ -218,17 +228,17 @@ void update_pacman_orientation(int newX, int newY) {
 
 int newPacman_x = 0;
 int newPacman_y = 0;
-void update_pacman(char direction[]) {
-  if (strcmp(direction, "cima") == 0) {
+void update_pacman(short direction) {
+  if (direction == 0) {
     newPacman_x = pacman_x;
     newPacman_y = pacman_y - 1;
-  } else if (strcmp(direction, "baixo") == 0) {
+  } else if (direction == 1) {
     newPacman_x = pacman_x;
     newPacman_y = pacman_y + 1;
-  } else if (strcmp(direction, "direita") == 0) {
+  } else if (direction == 2) {
     newPacman_x = pacman_x + 1;
     newPacman_y = pacman_y;
-  } else if (strcmp(direction, "esquerda") == 0) {
+  } else if (direction == 3) {
     newPacman_x = pacman_x - 1;
     newPacman_y = pacman_y;
   }
@@ -241,15 +251,10 @@ void update_pacman(char direction[]) {
   if (newPacman_y < 0) newPacman_y = WORLD_HEIGHT - 1;
   if (newPacman_y >= WORLD_HEIGHT) newPacman_y = 0;
   world[pacman_x][pacman_y] = ' ';
-  world[newPacman_x][newPacman_y] = (char) pacman_orientation;
+  world[newPacman_x][newPacman_y] = pacman_orientation;
   
   pacman_x = newPacman_x;
   pacman_y = newPacman_y;
-}
-
-void Alert(int show)
-{
-  Lcd_Chr(4, 8, show ? 0 : ' ');
 }
 
 void Write_EEPROM(int END, int DADO)
@@ -319,42 +324,40 @@ void Transform_Time(char *sec, char *min, char *hr) {
   *hr = ((*hr & 0xF0) >> 4)*10 + (*hr & 0x0F);
 }
 
-void Le_Entrada_Cmd(char slot[], int showInput, int row, int column) {
-    for (i = 0; i < sizeof(slot); i++) {
-        slot[i] = 0;
-    }
-    i = 0;
-    while((_char = Le_Teclado()) != '=')
-    {
-        if (_char != 255) {
-          if (_char == '*') {
-            if (i > 0) i--;
-            slot[i] = 0;
-            if (showInput) {
-              Lcd_Out(row, column + i, " ");
-            }
-          } else {
-            slot[i] = _char;
-            i++;
-            if (showInput) {
-              Lcd_Out(row, column, slot);
-            }
-          }
-        }
-    }
-}
-
-void Le_Entrada(char slot[]) {
-    Le_Entrada_Cmd(slot, 0, 0, 0);
-}
-
-void Le_Entrada_Cp(char slot[], int row, int column) {
-    Le_Entrada_Cmd(slot, 1, row, column);
+void Play_Intro_Music() {
+    Sound_Play(DO1, 200);
+    Sound_Play(DO1, 200);
+    Sound_Play(RE1, 200);
+    Sound_Play(DO1, 200);
+    Sound_Play(FA1, 1000);
+    Delay_ms(500);
+    Sound_Play(DO2, 100);
+    Sound_Play(SI1, 100);
+    Sound_Play(LA1, 100);
+    Sound_Play(SOL1, 100);
+    Sound_Play(FA1, 100);
+    Sound_Play(MI1, 100);
+    Sound_Play(RE_1, 100);
+    Sound_Play(DO1, 100);
+    Delay_ms(500);
+    Sound_Play(DO1, 100);
+    Delay_ms(1000);
 }
 
 int meta = 0;
-char command = 0;
+char command = (char) 0;
 char HORA_TXT[20];
+
+void Start_Screen() {
+    Lcd_Out(1, 6, "PAC MAN ");
+    Lcd_Chr_Cp(0);
+    Play_Intro_Music();
+
+    Lcd_Out(3, 1, "PRESSIONE UMA TECLA!");
+
+    while (Le_Teclado() == 255);
+}
+
 void main()
  {
         UART1_Init(19200);
@@ -367,24 +370,32 @@ void main()
 
         Lcd_Cmd(_LCD_CURSOR_OFF);
         CustomChar();
-        
-        Create_World();
+
         InitTimer2();
+        
+        Sound_Init(&PORTC, 5);
+        
+        // Start_Screen();
+        Create_World();
+        Print_World();
         
         while (1) {
             command = Le_Teclado();
-            
+
+            if (command != 255) Print_World();
             if (command == '8') {
-              update_pacman("cima");
+              Sound_Play(FA1, 50);
+              update_pacman(0);
             } else if (command == '2') {
-              update_pacman("baixo");
+              Sound_Play(FA1, 50);
+              update_pacman(1);
             } else if (command == '6') {
-              update_pacman("direita");
+              Sound_Play(FA1, 50);
+              update_pacman(2);
             } else if (command == '4') {
-              update_pacman("esquerda");
+              Sound_Play(FA1, 50);
+              update_pacman(3);
             }
-            
-            Print_World();
         }
 
         /*
