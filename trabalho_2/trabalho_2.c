@@ -19,7 +19,11 @@ sbit LCD_D5_Direction at TRISD5_bit;
 sbit LCD_D4_Direction at TRISD4_bit;
 
 unsigned int AD;        //0..1023
+unsigned int QTD_FOOD = 6;
+int IS_FINISH = 0;
+int IS_GAME_OVER = 0;
 char TXT[7];
+unsigned long next = 1;
 
 int hhh, mmm, sss;
 int critic_hhh, critic_mmm;
@@ -174,6 +178,7 @@ int pacman_y = 0;
 
 char pacman_orientation = (char) 0;
 char barrier_orientation = (char) 4;
+char food_orientation = (char) 5;
 
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
@@ -185,6 +190,8 @@ const char character_2[] = {31,31,31,27,17,0,0,0};
 const char character_3[] = {0,0,0,17,27,31,31,31};
 // barreira
 const char character_4[] = {31,31,31,31,31,31,31,31};
+// Comida
+const char character_5[] = {0,0,14,31,31,14,0,0};
 
 void CustomChar() {
   char i;
@@ -194,7 +201,31 @@ void CustomChar() {
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_4[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+    for (i = 0; i<=7; i++) LCD_Chr_Cp(character_5[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
+}
+
+int myrand(unsigned seed) {
+    next = seed;
+    next = next * 1103515245 + 12345;
+    return((unsigned)(next/65536) % 32768);
+}
+
+void mysrand(unsigned seed) {
+    next = seed;
+}
+
+int Read_RTC(int END)
+{
+  int Dado;
+  I2C1_Start();           // issue I2C start signal
+  I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
+  I2C1_Wr(END);             // send byte (data address)
+  I2C1_Repeated_Start();  // issue I2C signal repeated start
+  I2C1_Wr(0xD1);          // send byte (device address + R)
+  Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
+  I2C1_Stop();            // issue I2C stop signal
+  return(Dado);
 }
 
 void Create_World() {
@@ -204,11 +235,20 @@ void Create_World() {
          world[i][j] = ' ';
        }
     }
+    // Foi criado um metodo para fazer isso, porem o compilador caga
+    world[myrand(Read_RTC(0)) & 0b000000000000010011][myrand(Read_RTC(0) + 1) & 0b000000000000000011] = barrier_orientation;
+    world[myrand(Read_RTC(0) + 1) & 0b000000000000010011][myrand(Read_RTC(0) + 2) & 0b000000000000000011] = barrier_orientation;
+    world[myrand(Read_RTC(0) + 2) & 0b000000000000010011][myrand(Read_RTC(0) + 3) & 0b000000000000000011] = barrier_orientation;
+    world[myrand(Read_RTC(0) + 3) & 0b000000000000010011][myrand(Read_RTC(0) + 4) & 0b000000000000000011] = barrier_orientation;
+    
+    world[myrand(Read_RTC(0)) & 0b000000000000010011][myrand(Read_RTC(0) + 10) & 0b000000000000000011] = food_orientation;
+    world[myrand(Read_RTC(0) + 10) & 0b000000000000010011][myrand(Read_RTC(0) + 20) & 0b000000000000000011] = food_orientation;
+    world[myrand(Read_RTC(0) + 20) & 0b000000000000010011][myrand(Read_RTC(0) + 30) & 0b000000000000000011] = food_orientation;
+    world[myrand(Read_RTC(0) + 30) & 0b000000000000010011][myrand(Read_RTC(0) + 45) & 0b000000000000000011] = food_orientation;
+    world[myrand(Read_RTC(0) + 30) & 0b000000000000010011][myrand(Read_RTC(0) + 46) & 0b000000000000000011] = food_orientation;
+    world[myrand(Read_RTC(0) + 35) & 0b000000000000010011][myrand(Read_RTC(0) + 44) & 0b000000000000000011] = food_orientation;
+    world[myrand(Read_RTC(0) + 38) & 0b000000000000010011][myrand(Read_RTC(0) + 47) & 0b000000000000000011] = food_orientation;
     world[pacman_x][pacman_y] = (char) pacman_orientation;
-    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
-    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
-    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
-    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
 }
 
 void Print_World() {
@@ -249,6 +289,13 @@ void update_pacman(short direction) {
     newPacman_y = pacman_y;
   }
   if (world[newPacman_x][newPacman_y] != barrier_orientation) {
+    if (world[newPacman_x][newPacman_y] == food_orientation) {
+       QTD_FOOD --;
+    }
+    if (QTD_FOOD == 0) {
+        IS_FINISH = 1;
+        IS_GAME_OVER = 0;
+    }
     update_pacman_orientation(newPacman_x, newPacman_y);
 
     if (newPacman_x < 0) newPacman_x = 19;
@@ -310,20 +357,6 @@ void Write_RTC(int END, int DADO)
   I2C1_Stop();            // issue I2C stop signal
 }
 
-int Read_RTC(int END)
-{
-  int Dado;
-  I2C1_Start();           // issue I2C start signal
-  I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
-  I2C1_Wr(END);             // send byte (data address)
-  I2C1_Repeated_Start();  // issue I2C signal repeated start
-  I2C1_Wr(0xD1);          // send byte (device address + R)
-  Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
-  I2C1_Stop();            // issue I2C stop signal
-  return(Dado);
-}
-
-
 // bcd para binario
 void Transform_Time(char *sec, char *min, char *hr) {
   *sec = ((*sec & 0xF0) >> 4)*10 + (*sec & 0x0F);
@@ -365,6 +398,20 @@ void Start_Screen() {
     while (Le_Teclado() == 255);
 }
 
+void Finish() {
+     for(i = 0; i < 20; ++i) {
+       for(j = 0; j < 4 ; ++j)
+       {
+         world[i][j] = ' ';
+       }
+    }
+    Print_World();
+    if (IS_GAME_OVER) {
+     Lcd_Out(2, 1, "Game over");
+    } else {
+     Lcd_Out(2, 1, "Win");
+    }
+}
 void main()
  {
         UART1_Init(19200);
@@ -387,8 +434,10 @@ void main()
         Print_World();
 
         while (1) {
+            if (IS_FINISH) {
+              break;
+            }
             command = Le_Teclado();
-
             if (command == '8') {
               Sound_Play(FA1, 50);
               update_pacman(0);
@@ -404,7 +453,7 @@ void main()
             }
             Print_World();
         }
-
+        Finish();
         /*
         while(1)
         {
