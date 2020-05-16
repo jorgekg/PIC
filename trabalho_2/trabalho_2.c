@@ -31,7 +31,7 @@ char ENTRADA[33]; //32 para o dado entrado + reserva do NULL
 int temp;
 char _char;
 
-/* Interrupção */
+/* InterrupÃ§Ã£o */
 int cnt = 0;
 int cnt2 = 0;
 void InitTimer2(){
@@ -69,7 +69,7 @@ void interrupt() {
 
 char Le_Teclado()
 {
-  PORTD = 0B00010000; // VOCÊ SELECIONOU LA
+  PORTD = 0B00010000; // VOCÃŠ SELECIONOU LA
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '7';
@@ -87,7 +87,7 @@ char Le_Teclado()
     return '%';
   }
 
-  PORTD = 0B00100000; // VOCÊ SELECIONOU LB
+  PORTD = 0B00100000; // VOCÃŠ SELECIONOU LB
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '4';
@@ -105,7 +105,7 @@ char Le_Teclado()
     return '*';
   }
 
-  PORTD = 0B01000000; // VOCÊ SELECIONOU LC
+  PORTD = 0B01000000; // VOCÃŠ SELECIONOU LC
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '1';
@@ -123,7 +123,7 @@ char Le_Teclado()
     return '-';
   }
 
-  PORTD = 0B10000000; // VOCÊ SELECIONOU LD
+  PORTD = 0B10000000; // VOCÃŠ SELECIONOU LD
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return 'C';
@@ -173,6 +173,7 @@ int pacman_x = 0;
 int pacman_y = 0;
 
 char pacman_orientation = (char) 0;
+char barrier_orientation = (char) 4;
 
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
@@ -182,6 +183,8 @@ const char character_1[] = {31,15,7,3,3,7,15,31};
 const char character_2[] = {31,31,31,27,17,0,0,0};
 // Acima
 const char character_3[] = {0,0,0,17,27,31,31,31};
+// barreira
+const char character_4[] = {31,31,31,31,31,31,31,31};
 
 void CustomChar() {
   char i;
@@ -190,6 +193,7 @@ void CustomChar() {
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_1[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_2[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+    for (i = 0; i<=7; i++) LCD_Chr_Cp(character_4[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
 }
 
@@ -201,6 +205,10 @@ void Create_World() {
        }
     }
     world[pacman_x][pacman_y] = (char) pacman_orientation;
+    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
+    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
+    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
+    world[rand() & 0b000000000000010011][rand() & 0b000000000000000011] = barrier_orientation;
 }
 
 void Print_World() {
@@ -240,19 +248,20 @@ void update_pacman(short direction) {
     newPacman_x = pacman_x - 1;
     newPacman_y = pacman_y;
   }
+  if (world[newPacman_x][newPacman_y] != barrier_orientation) {
+    update_pacman_orientation(newPacman_x, newPacman_y);
 
-  update_pacman_orientation(newPacman_x, newPacman_y);
+    if (newPacman_x < 0) newPacman_x = 19;
+    if (newPacman_x >= 20) newPacman_x = 0;
 
-  if (newPacman_x < 0) newPacman_x = 19;
-  if (newPacman_x >= 20) newPacman_x = 0;
+    if (newPacman_y < 0) newPacman_y = 3;
+    if (newPacman_y >= 4) newPacman_y = 0;
+    world[pacman_x][pacman_y] = ' ';
+    world[newPacman_x][newPacman_y] = pacman_orientation;
 
-  if (newPacman_y < 0) newPacman_y = 3;
-  if (newPacman_y >= 4) newPacman_y = 0;
-  world[pacman_x][pacman_y] = ' ';
-  world[newPacman_x][newPacman_y] = pacman_orientation;
-  
-  pacman_x = newPacman_x;
-  pacman_y = newPacman_y;
+    pacman_x = newPacman_x;
+    pacman_y = newPacman_y;
+  }
 }
 
 void Write_EEPROM(int END, int DADO)
@@ -370,13 +379,13 @@ void main()
         CustomChar();
 
         InitTimer2();
-        
+
         Sound_Init(&PORTC, 5);
-        
+
         // Start_Screen();
         Create_World();
         Print_World();
-        
+
         while (1) {
             command = Le_Teclado();
 
@@ -404,12 +413,9 @@ void main()
                      Lcd_Cmd(_LCD_CLEAR);
                      Lcd_Out(2, 2, "MODO CONFIGURACAO");
                      Delay_ms(1000);
-
                      Write_EEPROM_Int(0, 0);
                 }
-
                 meta = Read_EEPROM_Int(0);
-
                 if (meta == 0) {
                   Lcd_Cmd(_LCD_CLEAR);
                   Lcd_Out(2, 2, "CONFIGURANDO A ");
@@ -422,10 +428,8 @@ void main()
                   Le_Entrada_Cp(ENTRADA, 3, 6);
                   meta=atoi(ENTRADA);
                   Write_EEPROM_Int(0, meta);
-
                   drawInfoLabel = 1;
                 }
-
                 if (drawInfoLabel) {
                     Lcd_Cmd(_LCD_CLEAR);
                     Lcd_Out(1, 2, "HORA:");
@@ -434,33 +438,27 @@ void main()
                     Lcd_Out(4, 2, "META:");
                     drawInfoLabel = 0;
                 }
-
                 sss = Read_RTC(0); // le segundos
                 mmm = Read_RTC(1); // le minutos
                 hhh = Read_RTC(2); // le horas
                 Transform_Time(&sss,&mmm,&hhh);
                 sprintf(HORA_TXT, "%02d:%02d:%02d",hhh,mmm,sss);
                 lcd_Out(1, 8, HORA_TXT);
-
                 if (last_second != sss) {
                   diff_seconds++;
                   if (diff_seconds >= 60) {
                     calculo_pecas_parcial = pecas_parcial;
                     sprintf(TXT, "%02d", calculo_pecas_parcial);
                     lcd_Out(2, 14, TXT);
-
                     pecas_parcial = 0;
                     diff_seconds = 0;
                   }
                   last_second = sss;
                 }
-
                 sprintf(TXT, "%02d", total_pecas);
                 lcd_Out(3, 11, TXT);
-
                 sprintf(TXT, "%02d", meta);
                 lcd_Out(4, 9, TXT);
-
                 Alert(calculo_pecas_parcial >= meta);
         }
         */
