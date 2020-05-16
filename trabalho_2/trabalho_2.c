@@ -1,6 +1,4 @@
-const int WORLD_WIDTH = 20;
-const int WORLD_HEIGHT = 4;
-int world[WORLD_HEIGHT + 1][WORLD_WIDTH + 1];
+int world[5][21];
 
 // Lcd pinout settings
 sbit LCD_RS at RE0_bit;
@@ -196,8 +194,8 @@ void CustomChar() {
 }
 
 void Create_World() {
-    for(i = 0; i < WORLD_WIDTH; ++i) {
-       for(j = 0; j < WORLD_HEIGHT ; ++j)
+    for(i = 0; i < 20; ++i) {
+       for(j = 0; j < 4 ; ++j)
        {
          world[i][j] = ' ';
        }
@@ -206,8 +204,8 @@ void Create_World() {
 }
 
 void Print_World() {
-    for(i = 0; i < WORLD_WIDTH; ++i) {
-       for(j = 0; j < WORLD_HEIGHT; ++j)
+    for(i = 0; i < 20; ++i) {
+       for(j = 0; j < 4; ++j)
        {
          Lcd_Chr(j + 1, i + 1, world[i][j]);
        }
@@ -245,11 +243,11 @@ void update_pacman(short direction) {
 
   update_pacman_orientation(newPacman_x, newPacman_y);
 
-  if (newPacman_x < 0) newPacman_x = WORLD_WIDTH - 1;
-  if (newPacman_x >= WORLD_WIDTH) newPacman_x = 0;
+  if (newPacman_x < 0) newPacman_x = 19;
+  if (newPacman_x >= 20) newPacman_x = 0;
 
-  if (newPacman_y < 0) newPacman_y = WORLD_HEIGHT - 1;
-  if (newPacman_y >= WORLD_HEIGHT) newPacman_y = 0;
+  if (newPacman_y < 0) newPacman_y = 3;
+  if (newPacman_y >= 4) newPacman_y = 0;
   world[pacman_x][pacman_y] = ' ';
   world[newPacman_x][newPacman_y] = pacman_orientation;
   
@@ -382,7 +380,6 @@ void main()
         while (1) {
             command = Le_Teclado();
 
-            if (command != 255) Print_World();
             if (command == '8') {
               Sound_Play(FA1, 50);
               update_pacman(0);
@@ -396,6 +393,7 @@ void main()
               Sound_Play(FA1, 50);
               update_pacman(3);
             }
+            Print_World();
         }
 
         /*
