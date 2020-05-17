@@ -179,6 +179,7 @@ int pacman_y = 0;
 char pacman_orientation = (char) 0;
 char barrier_orientation = (char) 4;
 char food_orientation = (char) 5;
+char ghost_orientation = (char) 6;
 
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
@@ -192,6 +193,8 @@ const char character_3[] = {0,0,0,17,27,31,31,31};
 const char character_4[] = {31,31,31,31,31,31,31,31};
 // Comida
 const char character_5[] = {0,0,14,31,31,14,0,0};
+// Fantasma
+const char character_6[] = {31,21,21,31,31,31,21,21};
 
 void CustomChar() {
   char i;
@@ -202,6 +205,7 @@ void CustomChar() {
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_3[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_4[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     for (i = 0; i<=7; i++) LCD_Chr_Cp(character_5[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
+    for (i = 0; i<=7; i++) LCD_Chr_Cp(character_6[i]); //grava 8 bytes na cgram ENDER 8 a 15 cgram
     LCD_Cmd(_LCD_RETURN_HOME); //sai da cgram
 }
 
@@ -248,6 +252,7 @@ void Create_World() {
     world[myrand(Read_RTC(0) + 30) & 0b000000000000010011][myrand(Read_RTC(0) + 46) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 35) & 0b000000000000010011][myrand(Read_RTC(0) + 44) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 38) & 0b000000000000010011][myrand(Read_RTC(0) + 47) & 0b000000000000000011] = food_orientation;
+    world[19][1] = ghost_orientation;
     world[pacman_x][pacman_y] = (char) pacman_orientation;
 }
 
