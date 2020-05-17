@@ -52,11 +52,11 @@ void external_interrupt() {
 
 void interrupt() {
   if(int0if_bit)
-    {
+    {          ;
       cnt2++;
-      if(cnt2 > 1){
-         cnt2=0;
-         external_interrupt();
+      if (cnt2 > 180) {
+         IS_FINISH = 1;
+         IS_GAME_OVER = 1;
       }
       int0if_bit=0;   // clear int0if_bit
     }
@@ -240,7 +240,7 @@ void Create_World() {
     world[myrand(Read_RTC(0) + 1) & 0b000000000000010011][myrand(Read_RTC(0) + 2) & 0b000000000000000011] = barrier_orientation;
     world[myrand(Read_RTC(0) + 2) & 0b000000000000010011][myrand(Read_RTC(0) + 3) & 0b000000000000000011] = barrier_orientation;
     world[myrand(Read_RTC(0) + 3) & 0b000000000000010011][myrand(Read_RTC(0) + 4) & 0b000000000000000011] = barrier_orientation;
-    
+
     world[myrand(Read_RTC(0)) & 0b000000000000010011][myrand(Read_RTC(0) + 10) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 10) & 0b000000000000010011][myrand(Read_RTC(0) + 20) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 20) & 0b000000000000010011][myrand(Read_RTC(0) + 30) & 0b000000000000000011] = food_orientation;
