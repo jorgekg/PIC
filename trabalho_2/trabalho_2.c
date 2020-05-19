@@ -35,7 +35,7 @@ sbit LCD_D4_Direction at TRISD4_bit;
 
 unsigned int AD;        //0..1023
 unsigned int QTD_FOOD = 6;
-int IS_FINISH = 0;
+int IS_FINISH= 0;
 int IS_GAME_OVER = 0;
 char TXT[7];
 unsigned long next = 1;
@@ -64,7 +64,7 @@ void external_interrupt() {
     PORTA.F2 = ~PORTA.F2;
 }
 
-
+char old_ghost_obj = 0;
 void interrupt() {
   if(int0if_bit)
     {
@@ -75,7 +75,7 @@ void interrupt() {
       }
       new_ghost_y = ghost_y;
       new_ghost_x = ghost_x;
-      if (cnt2 % 10 == 0) {
+      if (cnt2 % 6 == 0) {
       if (pacman_y > ghost_y) {
          new_ghost_y = (ghost_y + 1);
       } else if (pacman_y < ghost_y) {
@@ -91,8 +91,10 @@ void interrupt() {
       if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
          new_ghost_x = new_ghost_x + 1;
       }
-      world[ghost_x][ghost_y] = ' ';
+      world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
+      old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
       world[new_ghost_x][new_ghost_y] = ghost_orientation;
+      
       ghost_y = new_ghost_y;
       ghost_x = new_ghost_x;
       }
@@ -293,20 +295,22 @@ void Print_World() {
     }
 }
 
-void update_pacman_orientation(int newX, int newY) {
+char update_pacman_orientation(int newX, int newY) {
   if (newX > pacman_x) {
-    pacman_orientation = (char) 0;
+    return (char) 0;
   } else if (newX < pacman_x) {
-    pacman_orientation = (char) 1;
+    return (char) 1;
   } else if (newY > pacman_y) {
-    pacman_orientation = (char) 2;
+    return (char) 2;
   } else if (newY < pacman_y) {
-    pacman_orientation = (char) 3;
+    return 3;
   }
+  return pacman_orientation;
 }
 
 int newPacman_x = 0;
 int newPacman_y = 0;
+int newPacmanOrientation = 0;
 void update_pacman(short direction) {
   if (direction == 0) {
     newPacman_x = pacman_x;
@@ -321,6 +325,15 @@ void update_pacman(short direction) {
     newPacman_x = pacman_x - 1;
     newPacman_y = pacman_y;
   }
+  
+  newPacmanOrientation = update_pacman_orientation(newPacman_x, newPacman_y);
+  
+  if (newPacman_x < 0) newPacman_x = 19;
+  if (newPacman_x >= 20) newPacman_x = 0;
+
+  if (newPacman_y < 0) newPacman_y = 3;
+  if (newPacman_y >= 4) newPacman_y = 0;
+    
   if (world[newPacman_x][newPacman_y] != barrier_orientation) {
     if (world[newPacman_x][newPacman_y] == food_orientation) {
        QTD_FOOD --;
@@ -329,13 +342,9 @@ void update_pacman(short direction) {
         IS_FINISH = 1;
         IS_GAME_OVER = 0;
     }
-    update_pacman_orientation(newPacman_x, newPacman_y);
-
-    if (newPacman_x < 0) newPacman_x = 19;
-    if (newPacman_x >= 20) newPacman_x = 0;
-
-    if (newPacman_y < 0) newPacman_y = 3;
-    if (newPacman_y >= 4) newPacman_y = 0;
+    
+    pacman_orientation = newPacmanOrientation;
+    
     world[pacman_x][pacman_y] = ' ';
     world[newPacman_x][newPacman_y] = pacman_orientation;
 
@@ -397,7 +406,14 @@ void Transform_Time(char *sec, char *min, char *hr) {
   *hr = ((*hr & 0xF0) >> 4)*10 + (*hr & 0x0F);
 }
 
-void Play_Intro_Music() {
+int meta = 0;
+char command = (char) 0;
+char HORA_TXT[20];
+
+void Start_Screen() {
+    Lcd_Out(1, 6, "PAC MAN ");
+    Lcd_Chr_Cp(0);
+    
     Sound_Play(DO1, 200);
     Sound_Play(DO1, 200);
     Sound_Play(RE1, 200);
@@ -415,16 +431,6 @@ void Play_Intro_Music() {
     Delay_ms(500);
     Sound_Play(DO1, 100);
     Delay_ms(1000);
-}
-
-int meta = 0;
-char command = (char) 0;
-char HORA_TXT[20];
-
-void Start_Screen() {
-    Lcd_Out(1, 6, "PAC MAN ");
-    Lcd_Chr_Cp(0);
-    Play_Intro_Music();
 
     Lcd_Out(3, 1, "PRESSIONE UMA TECLA!");
 
@@ -462,7 +468,7 @@ void main()
 
         Sound_Init(&PORTC, 5);
 
-        // Start_Screen();
+        Start_Screen();
         Create_World();
         Print_World();
 
@@ -485,6 +491,9 @@ void main()
               update_pacman(3);
             }
             Print_World();
+            if (pacman_x == ghost_x && pacman_y == ghost_y) {
+               IS_FINISH = 1;
+            }
         }
         Finish();
         /*
