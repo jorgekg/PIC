@@ -1,4 +1,19 @@
 int world[5][21];
+int i = 0;
+int j = 0;
+int pacman_x = 0;
+int pacman_y = 0;
+
+int ghost_x = 19;
+int ghost_y = 1;
+
+int new_ghost_y = 0;
+int new_ghost_x = 0;
+
+char pacman_orientation = (char) 0;
+char barrier_orientation = (char) 4;
+char food_orientation = (char) 5;
+char ghost_orientation = (char) 6;
 
 // Lcd pinout settings
 sbit LCD_RS at RE0_bit;
@@ -52,11 +67,34 @@ void external_interrupt() {
 
 void interrupt() {
   if(int0if_bit)
-    {          ;
+    {
       cnt2++;
       if (cnt2 > 180) {
          IS_FINISH = 1;
          IS_GAME_OVER = 1;
+      }
+      new_ghost_y = ghost_y;
+      new_ghost_x = ghost_x;
+      if (cnt2 % 10 == 0) {
+      if (pacman_y > ghost_y) {
+         new_ghost_y = (ghost_y + 1);
+      } else if (pacman_y < ghost_y) {
+         new_ghost_y = (ghost_y - 1);
+      } else {
+        if (pacman_x > ghost_x) {
+         new_ghost_x = (ghost_x + 1);
+
+        } else if (pacman_x < ghost_x) {
+           new_ghost_x = (ghost_x - 1);
+        }
+      }
+      if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
+         new_ghost_x = new_ghost_x + 1;
+      }
+      world[ghost_x][ghost_y] = ' ';
+      world[new_ghost_x][new_ghost_y] = ghost_orientation;
+      ghost_y = new_ghost_y;
+      ghost_x = new_ghost_x;
       }
       int0if_bit=0;   // clear int0if_bit
     }
@@ -171,16 +209,6 @@ const int LA1 = 110;
 const int SI1 = 123;
 const int DO2 = 131;
 
-int i = 0;
-int j = 0;
-int pacman_x = 0;
-int pacman_y = 0;
-
-char pacman_orientation = (char) 0;
-char barrier_orientation = (char) 4;
-char food_orientation = (char) 5;
-char ghost_orientation = (char) 6;
-
 // Direita
 const char character_0[] = {31,30,28,24,24,28,30,31};
 // Esquerda
@@ -252,7 +280,7 @@ void Create_World() {
     world[myrand(Read_RTC(0) + 30) & 0b000000000000010011][myrand(Read_RTC(0) + 46) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 35) & 0b000000000000010011][myrand(Read_RTC(0) + 44) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 38) & 0b000000000000010011][myrand(Read_RTC(0) + 47) & 0b000000000000000011] = food_orientation;
-    world[19][1] = ghost_orientation;
+    world[ghost_x][ghost_y] = ghost_orientation;
     world[pacman_x][pacman_y] = (char) pacman_orientation;
 }
 
