@@ -34,7 +34,7 @@ sbit LCD_D5_Direction at TRISD5_bit;
 sbit LCD_D4_Direction at TRISD4_bit;
 
 unsigned int AD;        //0..1023
-unsigned int QTD_FOOD = 6;
+unsigned int QTD_FOOD = 7;
 int IS_FINISH= 0;
 int IS_GAME_OVER = 0;
 char TXT[7];
@@ -262,6 +262,8 @@ int Read_RTC(int END)
   return(Dado);
 }
 
+int food_x = 0;
+int food_y = 0;
 void Create_World() {
     for(i = 0; i < 20; ++i) {
        for(j = 0; j < 4 ; ++j)
@@ -282,6 +284,9 @@ void Create_World() {
     world[myrand(Read_RTC(0) + 30) & 0b000000000000010011][myrand(Read_RTC(0) + 46) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 35) & 0b000000000000010011][myrand(Read_RTC(0) + 44) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 38) & 0b000000000000010011][myrand(Read_RTC(0) + 47) & 0b000000000000000011] = food_orientation;
+
+    if (world[ghost_x][ghost_y] == food_orientation) --QTD_FOOD;
+    if (world[pacman_x][pacman_y] == food_orientation) --QTD_FOOD;
     world[ghost_x][ghost_y] = ghost_orientation;
     world[pacman_x][pacman_y] = (char) pacman_orientation;
 }
@@ -446,9 +451,15 @@ void Finish() {
     }
     Print_World();
     if (IS_GAME_OVER) {
+     Lcd_Cmd(_LCD_CLEAR);
      Lcd_Out(2, 1, "Game over");
+     Sound_Play(FA1, 2000);
+     Sound_Play(RE1, 2000);
     } else {
+     Lcd_Cmd(_LCD_CLEAR);
      Lcd_Out(2, 1, "Win");
+     Sound_Play(RE1, 2000);
+     Sound_Play(FA1, 2000);
     }
 }
 void main()
@@ -493,6 +504,7 @@ void main()
             Print_World();
             if (pacman_x == ghost_x && pacman_y == ghost_y) {
                IS_FINISH = 1;
+               IS_GAME_OVER = 1;
             }
         }
         Finish();
