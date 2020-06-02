@@ -58,16 +58,103 @@ unsigned char const pacman_right[] = {
 0x7F,0xE0,0x7F,0xC0,0x7F,0xFE,0x3F,0xFE,0x3F,0xFC,0x1F,0xF8,0x07,0xF0,0x00,0x00
 };
 
-//
 void print(unsigned char line, unsigned char column, code const unsigned char* sprite) {
+   T6963C_graphics(1);
+   T6963C_text(0);
    T6963C_sprite((column - 1) * 16, (line - 1) * 16, sprite, 16, 16);
 }
 
+void print_text(unsigned char line, unsigned char column, unsigned char* text) {
+   T6963C_graphics(0);
+   T6963C_text(1);
+   T6963C_write_text(text, line - 1, column - 1, T6963C_ROM_MODE_XOR);
+}
+
+char Le_Teclado()
+{
+  PORTD = 0B00010000; // VOCÊ SELECIONOU LA
+  if (PORTA.RA5 == 1) {
+    while(PORTA.RA5 == 1);
+    return '7';
+  }
+  if (PORTB.RB1 == 1) {
+    while(PORTB.RB1 == 1);
+    return '8';
+  }
+  if (PORTB.RB2 == 1) {
+    while(PORTB.RB2 == 1);
+    return '9';
+  }
+  if (PORTB.RB3 == 1) {
+    while(PORTB.RB3 == 1);
+    return '%';
+  }
+
+  PORTD = 0B00100000; // VOCÊ SELECIONOU LB
+  if (PORTA.RA5 == 1) {
+    while(PORTA.RA5 == 1);
+    return '4';
+  }
+  if (PORTB.RB1 == 1) {
+    while(PORTB.RB1 == 1);
+    return '5';
+  }
+  if (PORTB.RB2 == 1) {
+    while(PORTB.RB2 == 1);
+    return '6';
+  }
+  if (PORTB.RB3 == 1) {
+    while(PORTB.RB3 == 1);
+    return '*';
+  }
+
+  PORTD = 0B01000000; // VOCÊ SELECIONOU LC
+  if (PORTA.RA5 == 1) {
+    while(PORTA.RA5 == 1);
+    return '1';
+  }
+  if (PORTB.RB1 == 1) {
+    while(PORTB.RB1 == 1);
+    return '2';
+  }
+  if (PORTB.RB2 == 1) {
+    while(PORTB.RB2 == 1);
+    return '3';
+  }
+  if (PORTB.RB3 == 1) {
+    while(PORTB.RB3 == 1);
+    return '-';
+  }
+
+  PORTD = 0B10000000; // VOCÊ SELECIONOU LD
+  if (PORTA.RA5 == 1) {
+    while(PORTA.RA5 == 1);
+    return 'C';
+  }
+  if (PORTB.RB1 == 1) {
+    while(PORTB.RB1 == 1);
+    return '0';
+  }
+  if (PORTB.RB2 == 1) {
+    while(PORTB.RB2 == 1);
+    return '=';
+  }
+  if (PORTB.RB3 == 1) {
+    while(PORTB.RB3 == 1);
+    return '+';
+  }
+
+  return (char) 255;
+}
+
+char command = 255;
 void main() {
   unsigned char  panel;         // Current panel
   unsigned int   i;             // General purpose register
 
-  ADCON1=0x0E;
+  ADCON1 = 0B00001110;
+  TRISB = 0B00001111;
+  TRISA = 0B00100001;;
 
   TRISA3_bit = 1;               // Set RA3 as input
   TRISA4_bit = 1;               // Set RA4 as input
@@ -81,7 +168,22 @@ void main() {
    */
   T6963C_graphics(1);
   T6963C_text(1);
-
+  
+  print_text(1, 1, "teste");
+  Delay_ms(2000);
   print(1, 1, pacman_up);
   print(1, 2, pacman_down);
+  print(1, 3, pacman_left);
+  print(1, 4, pacman_right);
+  print(1, 5, obstacle);
+  print(1, 6, food);
+  print(1, 7, ghost);
+
+  while(1) {
+      command = Le_Teclado();
+      if (command != 255) {
+            print_text(1, 1, "Tecla apertada!");
+      }
+  }
+
 }
