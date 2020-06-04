@@ -12,16 +12,26 @@ sbit T6963C_ctrlrd_Direction  at TRISC1_bit;     // RD read signal
 sbit T6963C_ctrlcd_Direction  at TRISC0_bit;     // CD command/data signal
 sbit T6963C_ctrlrst_Direction at TRISC5_bit;     // RST reset signal
 
-/*
- * bitmap pictures stored in ROM
- */
-const code char mC[];
-const code char einstein[];
-// ------------------------------------------------------
-// GLCD Picture name: IMG_0046.bmp
-// GLCD Model: Toshiba T6963C 240x128
-// ------------------------------------------------------
-int Opcao;
+int world[8][15];
+int i = 0;
+int j = 0;
+int pacman_x = 0;
+int pacman_y = 0;
+
+int ghost_x = 19;
+int ghost_y = 1;
+
+int new_ghost_y = 0;
+int new_ghost_x = 0;
+
+int newPacman_x = 0;
+int newPacman_y = 0;
+int newPacmanOrientation = 0;
+
+char* pacman_orientation = (char) 0;
+char* barrier_orientation = (char) 4;
+char* food_orientation = (char) 5;
+char* ghost_orientation = (char) 6;
 
 unsigned char const food[] = {
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x80,0x03,0xC0,
@@ -147,6 +157,22 @@ char Le_Teclado()
   return (char) 255;
 }
 
+void update_pacman(short direction) {
+  if (direction == 0) {
+    newPacman_x = pacman_x;
+    newPacman_y = pacman_y - 1;
+  } else if (direction == 1) {
+    newPacman_x = pacman_x;
+    newPacman_y = pacman_y + 1;
+  } else if (direction == 2) {
+    newPacman_x = pacman_x + 1;
+    newPacman_y = pacman_y;
+  } else if (direction == 3) {
+    newPacman_x = pacman_x - 1;
+    newPacman_y = pacman_y;
+  }
+}
+
 char command = 255;
 void main() {
   unsigned char  panel;         // Current panel
@@ -168,16 +194,7 @@ void main() {
    */
   T6963C_graphics(1);
   T6963C_text(1);
-  
-  print_text(1, 1, "teste");
-  Delay_ms(2000);
-  print(1, 1, pacman_up);
-  print(1, 2, pacman_down);
-  print(1, 3, pacman_left);
-  print(1, 4, pacman_right);
-  print(1, 5, obstacle);
-  print(1, 6, food);
-  print(1, 7, ghost);
+
 
   while(1) {
       command = Le_Teclado();
