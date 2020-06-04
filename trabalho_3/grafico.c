@@ -280,6 +280,8 @@ void Create_World() {
          world[i][j] = ' ';
        }
     }
+
+    /*
     // Foi criado um metodo para fazer isso, porem o compilador caga
     world[myrand(Read_RTC(0)) & 0b000000000000010011][myrand(Read_RTC(0) + 1) & 0b000000000000000011] = barrier_orientation;
     world[myrand(Read_RTC(0) + 1) & 0b000000000000010011][myrand(Read_RTC(0) + 2) & 0b000000000000000011] = barrier_orientation;
@@ -293,11 +295,13 @@ void Create_World() {
     world[myrand(Read_RTC(0) + 30) & 0b000000000000010011][myrand(Read_RTC(0) + 46) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 35) & 0b000000000000010011][myrand(Read_RTC(0) + 44) & 0b000000000000000011] = food_orientation;
     world[myrand(Read_RTC(0) + 38) & 0b000000000000010011][myrand(Read_RTC(0) + 47) & 0b000000000000000011] = food_orientation;
+    */
 
     if (world[ghost_x][ghost_y] == food_orientation) --QTD_FOOD;
     if (world[pacman_x][pacman_y] == food_orientation) --QTD_FOOD;
-    world[ghost_x][ghost_y] = ghost_orientation;
-    world[pacman_x][pacman_y] = (char) pacman_orientation;
+    //world[ghost_x][ghost_y] = ghost_orientation;
+    //world[pacman_x][pacman_y] = pacman_orientation;
+
 }
 char currentCharactere = 0;
 const unsigned char* currentSprite;
@@ -449,12 +453,24 @@ void main() {           // General purpose register
   
   InitTimer2();
 
-  //Start_Screen();
+  Start_Screen();
   Create_World();
-//  Print_World();
+  //Print_World();
 
   while (1) {
-      if (IS_FINISH) {
+       print_text(1, 1, "Teste");
+       delay_ms(500);
+       print(1, 1, food);
+         delay_ms(500);
+       print_text(1, 1, "Teste");
+         delay_ms(500);
+       print(1, 1, food);
+         delay_ms(500);
+       print_text(1, 1, "Teste");
+         delay_ms(500);
+       print(1, 1, food);
+         delay_ms(500);
+      /*if (IS_FINISH) {
         break;
       }
       command = Le_Teclado();
@@ -471,7 +487,7 @@ void main() {           // General purpose register
       if (pacman_x == ghost_x && pacman_y == ghost_y) {
          IS_FINISH = 1;
          IS_GAME_OVER = 1;
-      }
+      }     */
   }
   Finish();
 
