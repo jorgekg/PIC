@@ -907,7 +907,39 @@ L_main25:
 	MOVLW       67
 	MOVWF       FARG_Lcd_Chr_CP_out_char+0 
 	CALL        _Lcd_Chr_CP+0, 0
-;aula 3.c,251 :: 		if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
+;aula 3.c,251 :: 		IntToStr(Temperatura, TXT);
+	MOVF        _Temperatura+0, 0 
+	MOVWF       FARG_IntToStr_input+0 
+	MOVLW       0
+	MOVWF       FARG_IntToStr_input+1 
+	MOVLW       _TXT+0
+	MOVWF       FARG_IntToStr_output+0 
+	MOVLW       hi_addr(_TXT+0)
+	MOVWF       FARG_IntToStr_output+1 
+	CALL        _IntToStr+0, 0
+;aula 3.c,252 :: 		UART1_Write_Text(TXT);
+	MOVLW       _TXT+0
+	MOVWF       FARG_UART1_Write_Text_uart_text+0 
+	MOVLW       hi_addr(_TXT+0)
+	MOVWF       FARG_UART1_Write_Text_uart_text+1 
+	CALL        _UART1_Write_Text+0, 0
+;aula 3.c,253 :: 		IntToStr(temAtual, TXT);
+	MOVF        _temAtual+0, 0 
+	MOVWF       FARG_IntToStr_input+0 
+	MOVF        _temAtual+1, 0 
+	MOVWF       FARG_IntToStr_input+1 
+	MOVLW       _TXT+0
+	MOVWF       FARG_IntToStr_output+0 
+	MOVLW       hi_addr(_TXT+0)
+	MOVWF       FARG_IntToStr_output+1 
+	CALL        _IntToStr+0, 0
+;aula 3.c,254 :: 		UART1_Write_Text(TXT);
+	MOVLW       _TXT+0
+	MOVWF       FARG_UART1_Write_Text_uart_text+0 
+	MOVLW       hi_addr(_TXT+0)
+	MOVWF       FARG_UART1_Write_Text_uart_text+1 
+	CALL        _UART1_Write_Text+0, 0
+;aula 3.c,255 :: 		if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
 	MOVLW       128
 	MOVWF       R0 
 	MOVLW       128
@@ -939,11 +971,11 @@ L__main38:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_main29
 L__main30:
-;aula 3.c,252 :: 		Alert();
+;aula 3.c,256 :: 		Alert();
 	CALL        _Alert+0, 0
 L_main29:
-;aula 3.c,254 :: 		}
+;aula 3.c,258 :: 		}
 	GOTO        L_main25
-;aula 3.c,255 :: 		}
+;aula 3.c,259 :: 		}
 	GOTO        $+0
 ; end of _main

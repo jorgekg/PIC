@@ -249,6 +249,10 @@ void main()
  Lcd_Out(2, 8, TXT);
  Lcd_Chr_Cp(0);
  Lcd_Chr_CP('C');
+ IntToStr(Temperatura, TXT);
+ UART1_Write_Text(TXT);
+ IntToStr(temAtual, TXT);
+ UART1_Write_Text(TXT);
  if(Temperatura >= temAtual && mmmt == mmm && hhh == hhht)
  Alert();
 
