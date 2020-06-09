@@ -135,7 +135,38 @@ void external_interrupt() {
     PORTA.F2 = ~PORTA.F2;
 }
 
+int move_ghost_bool = 0;
 char old_ghost_obj = 0;
+void move_ghost() {
+     new_ghost_y = ghost_y;
+     new_ghost_x = ghost_x;
+     if (pacman_y > ghost_y) {
+        new_ghost_y = (ghost_y + 1);
+     } else if (pacman_y < ghost_y) {
+         new_ghost_y = (ghost_y - 1);
+     } else {
+        if (pacman_x > ghost_x) {
+        new_ghost_x = (ghost_x + 1);
+
+       } else if (pacman_x < ghost_x) {
+          new_ghost_x = (ghost_x - 1);
+       }
+     }
+     if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
+        new_ghost_x = new_ghost_x + 1;
+     }
+     world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
+     printCoordinate(ghost_x, ghost_y);
+
+     old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
+     world[new_ghost_x][new_ghost_y] = ghost_orientation;
+     printCoordinate(new_ghost_x, new_ghost_y);
+
+     ghost_y = new_ghost_y;
+     ghost_x = new_ghost_x;
+}
+
+
 void interrupt() {
   if(int0if_bit)
     {
@@ -144,39 +175,15 @@ void interrupt() {
          IS_FINISH = 1;
          IS_GAME_OVER = 1;
       }
-      new_ghost_y = ghost_y;
-      new_ghost_x = ghost_x;
-      if (cnt2 % 6 == 0) {
-      if (pacman_y > ghost_y) {
-         new_ghost_y = (ghost_y + 1);
-      } else if (pacman_y < ghost_y) {
-         new_ghost_y = (ghost_y - 1);
-      } else {
-        if (pacman_x > ghost_x) {
-         new_ghost_x = (ghost_x + 1);
-
-        } else if (pacman_x < ghost_x) {
-           new_ghost_x = (ghost_x - 1);
-        }
-      }
-      if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
-         new_ghost_x = new_ghost_x + 1;
-      }
-      world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
-      old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
-      world[new_ghost_x][new_ghost_y] = ghost_orientation;
-
-      ghost_y = new_ghost_y;
-      ghost_x = new_ghost_x;
-      }
-      int0if_bit=0;   // clear int0if_bit
+      int0if_bit = 0;   // clear int0if_bit
     }
 
   if (TMR2IF_bit) {
     cnt++;
-    if (cnt >= 1000) {
+    if (cnt >= 10000) {
       PORTA.F1 = ~PORTA.F1;
       cnt = 0;
+      move_ghost_bool = 1;
     }
     TMR2IF_bit = 0;        // clear TMR2IF
   }
@@ -487,7 +494,6 @@ UART1_Init(19200);
   T6963C_graphics(1);
   T6963C_text(1);
 
-
   InitTimer2();
 
   //Start_Screen();
@@ -497,6 +503,12 @@ UART1_Init(19200);
       if (IS_FINISH) {
         break;
       }
+      
+      if (pacman_x == ghost_x && pacman_y == ghost_y) {
+         IS_FINISH = 1;
+         IS_GAME_OVER = 1;
+      }
+      
       command = Le_Teclado();
       if (command == '8') {
         update_pacman(0);
@@ -508,9 +520,9 @@ UART1_Init(19200);
         update_pacman(3);
       }
       
-      if (pacman_x == ghost_x && pacman_y == ghost_y) {
-         IS_FINISH = 1;
-         IS_GAME_OVER = 1;
+      if (move_ghost_bool) {
+         move_ghost_bool = 0;
+         //move_ghost();
       }
   }
   Finish();
