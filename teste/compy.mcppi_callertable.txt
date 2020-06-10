@@ -35,34 +35,35 @@ main
 		Mul_16x16_U
 		myrand
 			Mul_32x32_U
+		Print_World
+			printCoordinate
+				Mul_16x16_U
+				getSprite
+				print
+					T6963C_writeCommand
+						T6963C_waitReady
+						Delay_1us
+					T6963C_sprite
+						Div_16x16_U
+						Mul_16x16_U
+						T6963C_waitReady
+						T6963C_setPtr
+							T6963C_writeData
+								Delay_1us
+							T6963C_writeCommand
+								T6963C_waitReady
+								Delay_1us
+						T6963C_writeCommand
+							T6963C_waitReady
+							Delay_1us
+						Delay_1us
 	Le_Teclado
 	update_pacman
 		update_pacman_orientation
 		Mul_16x16_U
-	Print_World
-		Mul_16x16_U
-		print
-			T6963C_writeCommand
-				T6963C_waitReady
-				Delay_1us
-			T6963C_sprite
-				Div_16x16_U
-				Mul_16x16_U
-				T6963C_waitReady
-				T6963C_setPtr
-					T6963C_writeData
-						Delay_1us
-					T6963C_writeCommand
-						T6963C_waitReady
-						Delay_1us
-				T6963C_writeCommand
-					T6963C_waitReady
-					Delay_1us
-				Delay_1us
-	Finish
-		Mul_16x16_U
-		Print_World
+		printCoordinate
 			Mul_16x16_U
+			getSprite
 			print
 				T6963C_writeCommand
 					T6963C_waitReady
@@ -81,6 +82,55 @@ main
 						T6963C_waitReady
 						Delay_1us
 					Delay_1us
+	UART1_Write_Text
+		UART1_Write
+	move_ghost
+		Mul_16x16_U
+		printCoordinate
+			Mul_16x16_U
+			getSprite
+			print
+				T6963C_writeCommand
+					T6963C_waitReady
+					Delay_1us
+				T6963C_sprite
+					Div_16x16_U
+					Mul_16x16_U
+					T6963C_waitReady
+					T6963C_setPtr
+						T6963C_writeData
+							Delay_1us
+						T6963C_writeCommand
+							T6963C_waitReady
+							Delay_1us
+					T6963C_writeCommand
+						T6963C_waitReady
+						Delay_1us
+					Delay_1us
+	Finish
+		Mul_16x16_U
+		Print_World
+			printCoordinate
+				Mul_16x16_U
+				getSprite
+				print
+					T6963C_writeCommand
+						T6963C_waitReady
+						Delay_1us
+					T6963C_sprite
+						Div_16x16_U
+						Mul_16x16_U
+						T6963C_waitReady
+						T6963C_setPtr
+							T6963C_writeData
+								Delay_1us
+							T6963C_writeCommand
+								T6963C_waitReady
+								Delay_1us
+						T6963C_writeCommand
+							T6963C_waitReady
+							Delay_1us
+						Delay_1us
 		print_text
 			T6963C_writeCommand
 				T6963C_waitReady
@@ -99,6 +149,3 @@ main
 				T6963C_writeData
 					Delay_1us
 interrupt
-	Div_16x16_S
-		Div_16x16_S_L
-	Mul_16x16_U

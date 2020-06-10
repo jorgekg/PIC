@@ -403,8 +403,6 @@ cs
 cs_bit
 csrc
 csrc_bit
-currentcharactere
-currentsprite
 cvr0
 cvr0_bit
 cvr1
@@ -460,6 +458,8 @@ div_32x32_s
 div_32x32_u
 div_8x8_s
 div_8x8_u
+do1
+do2
 done
 done_bit
 double2byte
@@ -513,6 +513,7 @@ expander_write_portab
 expander_write_portb
 external_interrupt
 f
+fa1
 fabs
 fast
 ferr
@@ -555,6 +556,7 @@ fullbits
 gcen
 gcen_bit
 get_fosc_khz
+getsprite
 ghost
 ghost_count
 ghost_orientation
@@ -722,6 +724,7 @@ kbi3_bit
 keypad_init
 keypad_key_click
 keypad_key_press
+la1
 labs
 lata
 lata0
@@ -860,6 +863,7 @@ memcpy
 memmove
 memset
 meta
+mi1
 min
 mmc_fat_append
 mmc_fat_assign
@@ -883,6 +887,8 @@ mmc_write_sector
 mmm
 modf
 move_delay
+move_ghost
+move_ghost_bool
 mul_16x16_s
 mul_16x16_u
 mul_32x32_fp
@@ -1056,6 +1062,7 @@ preinc2
 print
 print_text
 print_world
+printcoordinate
 printout
 prod
 prodh
@@ -1230,6 +1237,7 @@ rd6
 rd6_bit
 rd7
 rd7_bit
+re_1
 re0
 re0_bit
 re1
@@ -1292,6 +1300,7 @@ setfun32
 setiov3224
 setjmp
 shorttostr
+si1
 sin
 sine3
 sinh
@@ -1310,6 +1319,7 @@ soft_uart_break
 soft_uart_init
 soft_uart_read
 soft_uart_write
+sol1
 sound_init
 sound_play
 sp0

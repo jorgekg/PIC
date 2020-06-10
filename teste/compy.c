@@ -53,13 +53,13 @@ unsigned char const pacman_right[] = {
 0x7F,0xE0,0x7F,0xC0,0x7F,0xFE,0x3F,0xFE,0x3F,0xFC,0x1F,0xF8,0x07,0xF0,0x00,0x00
 };
 
-void print(unsigned char line, unsigned char column, code const unsigned char* sprite) {
+void print(unsigned char column, unsigned char line, code const unsigned char* sprite) {
    T6963C_graphics(1);
    T6963C_text(0);
-   T6963C_sprite((column - 1) * 16, (line - 1) * 16, sprite, 16, 16);
+   T6963C_sprite(column * 16, line * 16, sprite, 16, 16);
 }
 
-void print_text(unsigned char line, unsigned char column, unsigned char* text) {
+void print_text(unsigned char column, unsigned char line, unsigned char* text) {
    T6963C_graphics(0);
    T6963C_text(1);
    T6963C_write_text(text, line - 1, column - 1, T6963C_ROM_MODE_XOR);
@@ -68,22 +68,45 @@ void print_text(unsigned char line, unsigned char column, unsigned char* text) {
 int world[8][15];
 int i = 0;
 int j = 0;
-int pacman_x = 1;
-int pacman_y = 1;
+int pacman_x = 0;
+int pacman_y = 0;
 
-int ghost_x = 1;
-int ghost_y = 14;
+int ghost_x = 14;
+int ghost_y = 0;
 
 int new_ghost_y = 0;
 int new_ghost_x = 0;
 
-char pacman_orientation = (char) 0;
+char pacman_orientation = (char) 1;
 char barrier_orientation = (char) 4;
 char food_orientation = (char) 5;
 char ghost_orientation = (char) 6;
 
+const unsigned char* getSprite(char charactereValue) {
+    if (charactereValue == 0) {
+      return pacman_up;
+   } else if (charactereValue == 1) {
+      return pacman_right;
+   } else if (charactereValue == 2) {
+      return pacman_down;
+   } else if (charactereValue == 3) {
+      return pacman_left;
+   } else if (charactereValue == food_orientation) {
+      return food;
+   } else if (charactereValue == ghost_orientation) {
+      return ghost;
+   } else if (charactereValue == barrier_orientation) {
+      return obstacle;
+   }
+   return blank;
+}
+
+void printCoordinate(int x, int y) {
+     print(x, y, getSprite(world[x][y]));
+}
+
 unsigned int AD;        //0..1023
-unsigned int QTD_FOOD = 7;
+unsigned int QTD_FOOD = 6;
 int IS_FINISH = 0;
 int IS_GAME_OVER = 0;
 char TXT[7];
@@ -98,7 +121,7 @@ char ENTRADA[33]; //32 para o dado entrado + reserva do NULL
 int temp;
 char _char;
 
-/* Interrupção */
+/* InterrupÃ§Ã£o */
 int cnt = 0;
 int cnt2 = 0;
 void InitTimer2(){
@@ -112,7 +135,40 @@ void external_interrupt() {
     PORTA.F2 = ~PORTA.F2;
 }
 
+int move_ghost_bool = 0;
 char old_ghost_obj = 0;
+void move_ghost() {
+     new_ghost_y = ghost_y;
+     new_ghost_x = ghost_x;
+     if (pacman_y > ghost_y) {
+        new_ghost_y = (ghost_y + 1);
+     } else if (pacman_y < ghost_y) {
+         new_ghost_y = (ghost_y - 1);
+     } else {
+        if (pacman_x > ghost_x) {
+        new_ghost_x = (ghost_x + 1);
+
+       } else if (pacman_x < ghost_x) {
+          new_ghost_x = (ghost_x - 1);
+       }
+     }
+     if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
+        new_ghost_x = new_ghost_x + 1;
+     }
+
+     world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
+     printCoordinate(ghost_x, ghost_y);
+
+
+     old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
+     world[new_ghost_x][new_ghost_y] = ghost_orientation;
+     printCoordinate(new_ghost_x, new_ghost_y);
+
+     ghost_y = new_ghost_y;
+     ghost_x = new_ghost_x;
+}
+
+
 void interrupt() {
   if(int0if_bit)
     {
@@ -121,32 +177,7 @@ void interrupt() {
          IS_FINISH = 1;
          IS_GAME_OVER = 1;
       }
-      new_ghost_y = ghost_y;
-      new_ghost_x = ghost_x;
-      if (cnt2 % 6 == 0) {
-      if (pacman_y > ghost_y) {
-         new_ghost_y = (ghost_y + 1);
-      } else if (pacman_y < ghost_y) {
-         new_ghost_y = (ghost_y - 1);
-      } else {
-        if (pacman_x > ghost_x) {
-         new_ghost_x = (ghost_x + 1);
-
-        } else if (pacman_x < ghost_x) {
-           new_ghost_x = (ghost_x - 1);
-        }
-      }
-      if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
-         new_ghost_x = new_ghost_x + 1;
-      }
-      world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
-      old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
-      world[new_ghost_x][new_ghost_y] = ghost_orientation;
-
-      ghost_y = new_ghost_y;
-      ghost_x = new_ghost_x;
-      }
-      int0if_bit=0;   // clear int0if_bit
+      int0if_bit = 0;   // clear int0if_bit
     }
 
   if (TMR2IF_bit) {
@@ -154,6 +185,7 @@ void interrupt() {
     if (cnt >= 1000) {
       PORTA.F1 = ~PORTA.F1;
       cnt = 0;
+      move_ghost_bool = 1;
     }
     TMR2IF_bit = 0;        // clear TMR2IF
   }
@@ -161,7 +193,7 @@ void interrupt() {
 
 char Le_Teclado()
 {
-  PORTD = 0B00010000; // VOCÊ SELECIONOU LA
+  PORTD = 0B00010000; // VOCÃŠ SELECIONOU LA
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '7';
@@ -179,7 +211,7 @@ char Le_Teclado()
     return '%';
   }
 
-  PORTD = 0B00100000; // VOCÊ SELECIONOU LB
+  PORTD = 0B00100000; // VOCÃŠ SELECIONOU LB
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '4';
@@ -197,7 +229,7 @@ char Le_Teclado()
     return '*';
   }
 
-  PORTD = 0B01000000; // VOCÊ SELECIONOU LC
+  PORTD = 0B01000000; // VOCÃŠ SELECIONOU LC
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '1';
@@ -215,7 +247,7 @@ char Le_Teclado()
     return '-';
   }
 
-  PORTD = 0B10000000; // VOCÊ SELECIONOU LD
+  PORTD = 0B10000000; // VOCÃŠ SELECIONOU LD
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return 'C';
@@ -272,11 +304,20 @@ int Read_RTC(int END)
   return(Dado);
 }
 
+void Print_World() {
+    for(i = 0; i < 15; ++i) {
+       for(j = 0; j < 8; ++j)
+       {
+         printCoordinate(i, j);
+       }
+    }
+}
+
 int food_x = 0;
 int food_y = 0;
 void Create_World() {
     for(i = 0; i < 15; ++i) {
-       for(j = 0; j < 15 ; ++j)
+       for(j = 0; j < 8 ; ++j)
        {
          world[i][j] = ' ';
        }
@@ -284,63 +325,39 @@ void Create_World() {
     // Foi criado um metodo para fazer isso, porem o compilador caga
     world[4][myrand(rands * 5) & 0b000000000000000111] = barrier_orientation;
     world[myrand(rands * 1) & 0b000000000000000111][myrand(rands * 1) & 0b000000000000000111] = barrier_orientation;
-    world[myrand(rands * 50) & 0b000000000000000111][myrand(rands * 26) & 0b000000000000000111] = barrier_orientation;
-    world[myrand(rands * 985) & 0b000000000000000111][myrand(rands * 76) & 0b000000000000000111] = barrier_orientation;
+    world[myrand(rands * 26) & 0b000000000000000111][myrand(rands * 50) & 0b000000000000000111] = barrier_orientation;
+    world[myrand(rands * 76) & 0b000000000000000111][myrand(rands * 985) & 0b000000000000000111] = barrier_orientation;
 
-    world[myrand(rands * 12)& 0b000000000000000111][myrand(rands * 500)& 0b000000000000000111] = food_orientation;
-    world[myrand(rands * 85)& 0b000000000000000111][myrand(rands * 1)& 0b000000000000000111] = food_orientation;
-    world[myrand(rands * 552)& 0b000000000000000111][myrand(rands * 63)& 0b000000000000000111] = food_orientation;
-    world[5][11] = food_orientation;
-    world[3][5] = food_orientation;
-    world[2][8] = food_orientation;
+    world[myrand(rands * 500)& 0b000000000000000111][myrand(rands * 12)& 0b000000000000000111] = food_orientation;
+    world[myrand(rands * 1)& 0b000000000000000111][myrand(rands * 85)& 0b000000000000000111] = food_orientation;
+    world[myrand(rands * 63)& 0b000000000000000111][myrand(rands * 552)& 0b000000000000000111] = food_orientation;
+
+    world[11][5] = food_orientation;
+    world[5][3] = food_orientation;
+    world[8][2] = food_orientation;
     world[7][7] = food_orientation;
 
-    if (world[ghost_x][ghost_y] == food_orientation) --QTD_FOOD;
-    if (world[pacman_x][pacman_y] == food_orientation) --QTD_FOOD;
+    if (world[ghost_x][ghost_y] == food_orientation) {
+       --QTD_FOOD;
+    }
+    if (world[pacman_x][pacman_y] == food_orientation){
+        --QTD_FOOD;
+    }
     world[ghost_x][ghost_y] = ghost_orientation;
     world[pacman_x][pacman_y] = (char) pacman_orientation;
-}
-char currentCharactere = 0;
-const unsigned char* currentSprite;
-void Print_World() {
-//    print(1, 1, food);
-    for(i = 0; i < 15; ++i) {
-       for(j = 0; j < 15; ++j)
-       {
-         currentCharactere = world[i][j];
-         if (currentCharactere == 0) {
-            currentSprite = pacman_right;
-         } else if (currentCharactere == 1) {
-            currentSprite = pacman_left;
-         } else if (currentCharactere == 2) {
-            currentSprite = pacman_up;
-         } else if (currentCharactere == 3) {
-            currentSprite = pacman_down;
-         } else if (currentCharactere == food_orientation) {
-            currentSprite = food;
-         } else if (currentCharactere == ghost_orientation) {
-            currentSprite = ghost;
-         } else if (currentCharactere == barrier_orientation) {
-            currentSprite = obstacle;
-         } else if (currentCharactere == ' ') {
-            currentSprite = blank;
-         } else {
-            currentSprite = blank;
-         }
-         print(i, j, currentSprite);
-       }
-    }
+
+    Print_World();
 }
 
 char update_pacman_orientation(int newX, int newY) {
   if (newX > pacman_x) {
-    return (char) 0;
-  } else if (newX < pacman_x) {
     return (char) 1;
+  } else if (newX < pacman_x) {
+    return (char) 3;
   } else if (newY > pacman_y) {
     return (char) 2;
   } else if (newY < pacman_y) {
-    return 3;
+    return 0;
   }
   return pacman_orientation;
 }
@@ -353,11 +370,11 @@ void update_pacman(short direction) {
     newPacman_x = pacman_x;
     newPacman_y = pacman_y - 1;
   } else if (direction == 1) {
-    newPacman_x = pacman_x;
-    newPacman_y = pacman_y + 1;
-  } else if (direction == 2) {
     newPacman_x = pacman_x + 1;
     newPacman_y = pacman_y;
+  } else if (direction == 2) {
+    newPacman_x = pacman_x;
+    newPacman_y = pacman_y + 1;
   } else if (direction == 3) {
     newPacman_x = pacman_x - 1;
     newPacman_y = pacman_y;
@@ -366,24 +383,28 @@ void update_pacman(short direction) {
   newPacmanOrientation = update_pacman_orientation(newPacman_x, newPacman_y);
 
   if (newPacman_x < 0) newPacman_x = 14;
-  if (newPacman_x >= 14) newPacman_x = 0;
+  if (newPacman_x > 14) newPacman_x = 0;
 
-  if (newPacman_y < 0) newPacman_y = 14;
-  if (newPacman_y >= 14) newPacman_y = 0;
+  if (newPacman_y < 0) newPacman_y = 7;
+  if (newPacman_y > 7) newPacman_y = 0;
+  
+  if (QTD_FOOD == 0) {
+      IS_FINISH = 1;
+      IS_GAME_OVER = 0;
+  }
 
   if (world[newPacman_x][newPacman_y] != barrier_orientation) {
     if (world[newPacman_x][newPacman_y] == food_orientation) {
-       QTD_FOOD --;
-    }
-    if (QTD_FOOD == 0) {
-        IS_FINISH = 1;
-        IS_GAME_OVER = 0;
+       QTD_FOOD--;
     }
 
     pacman_orientation = newPacmanOrientation;
 
     world[pacman_x][pacman_y] = ' ';
+    printCoordinate(pacman_x, pacman_y);
+
     world[newPacman_x][newPacman_y] = pacman_orientation;
+    printCoordinate(newPacman_x, newPacman_y);
 
     pacman_x = newPacman_x;
     pacman_y = newPacman_y;
@@ -460,12 +481,22 @@ void Finish() {
     }
 }
 
+const int DO1 = 65;
+const int RE_1 = 73;
+const int MI1 = 82;
+const int FA1 = 87;
+const int SOL1 = 98;
+const int LA1 = 110;
+const int SI1 = 123;
+const int DO2 = 131;
+
 void main() {           // General purpose register
 UART1_Init(19200);
   I2C1_Init(100000);
   ADCON1 = 0B00001110;
   TRISB = 0B00001111;
   TRISA = 0B00100001;
+
 
   TRISA3_bit = 1;               // Set RA3 as input
   TRISA4_bit = 1;               // Set RA4 as input
@@ -480,31 +511,36 @@ UART1_Init(19200);
   T6963C_graphics(1);
   T6963C_text(1);
 
-
   InitTimer2();
 
   //Start_Screen();
   Create_World();
-//  Print_World();
 
   while (1) {
       if (IS_FINISH) {
         break;
       }
+
+      if (pacman_x == ghost_x && pacman_y == ghost_y) {
+         IS_FINISH = 1;
+         IS_GAME_OVER = 1;
+      }
+
       command = Le_Teclado();
       if (command == '8') {
         update_pacman(0);
-      } else if (command == '2') {
-        update_pacman(1);
       } else if (command == '6') {
+        update_pacman(1);
+      } else if (command == '2') {
         update_pacman(2);
       } else if (command == '4') {
         update_pacman(3);
       }
-      Print_World();
-      if (pacman_x == ghost_x && pacman_y == ghost_y) {
-         IS_FINISH = 1;
-         IS_GAME_OVER = 1;
+
+      if (move_ghost_bool) {
+         move_ghost_bool = 0;
+         UART1_Write_Text("UART");
+         move_ghost();
       }
   }
   Finish();

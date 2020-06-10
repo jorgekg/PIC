@@ -19,9 +19,10 @@ Count=0
 [IMAGES]
 Count=0
 [OPENED_FILES]
-Count=2
+Count=3
 File0=compy.c
-File1=..\trabalho_2\trabalho_2.c
+File1=..\trabalho_3\grafico.c
+File2=..\trabalho_2\trabalho_2.c
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
