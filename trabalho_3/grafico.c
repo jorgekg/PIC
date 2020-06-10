@@ -155,8 +155,10 @@ void move_ghost() {
      if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
         new_ghost_x = new_ghost_x + 1;
      }
+
      world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
      printCoordinate(ghost_x, ghost_y);
+     
 
      old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
      world[new_ghost_x][new_ghost_y] = ghost_orientation;
@@ -180,7 +182,7 @@ void interrupt() {
 
   if (TMR2IF_bit) {
     cnt++;
-    if (cnt >= 10000) {
+    if (cnt >= 1000) {
       PORTA.F1 = ~PORTA.F1;
       cnt = 0;
       move_ghost_bool = 1;
@@ -522,7 +524,8 @@ UART1_Init(19200);
       
       if (move_ghost_bool) {
          move_ghost_bool = 0;
-         //move_ghost();
+         UART1_Write_Text("UART");
+         move_ghost();
       }
   }
   Finish();
