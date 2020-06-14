@@ -2,6 +2,14 @@ main
 	__CC2DW
 	UART1_Init
 	I2C1_Init
+	Sound_Init
+	Start_Screen_1
+		Sound_Play
+			Get_Fosc_kHz
+			Mul_32x32_U
+			Div_32x32_U
+			Div_16x16_U
+			Delay_Cyc
 	T6963C_init
 		Div_16x16_U
 		Mul_16x16_U
@@ -33,8 +41,6 @@ main
 	InitTimer2
 	Create_World
 		Mul_16x16_U
-		myrand
-			Mul_32x32_U
 		Print_World
 			printCoordinate
 				Mul_16x16_U
@@ -107,6 +113,34 @@ main
 						T6963C_waitReady
 						Delay_1us
 					Delay_1us
+	generate_food
+		rand
+			srand
+			Mul_32x32_U
+		Div_16x16_S
+			Div_16x16_S_L
+		Mul_16x16_U
+		printCoordinate
+			Mul_16x16_U
+			getSprite
+			print
+				T6963C_writeCommand
+					T6963C_waitReady
+					Delay_1us
+				T6963C_sprite
+					Div_16x16_U
+					Mul_16x16_U
+					T6963C_waitReady
+					T6963C_setPtr
+						T6963C_writeData
+							Delay_1us
+						T6963C_writeCommand
+							T6963C_waitReady
+							Delay_1us
+					T6963C_writeCommand
+						T6963C_waitReady
+						Delay_1us
+					Delay_1us
 	Finish
 		Mul_16x16_U
 		Print_World
@@ -149,3 +183,5 @@ main
 				T6963C_writeData
 					Delay_1us
 interrupt
+	Div_16x16_S
+		Div_16x16_S_L

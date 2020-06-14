@@ -107,7 +107,6 @@ _cf_sec_num
 _cf_status
 _cf_write_sec_cmd
 _ch
-_char
 _command
 _doprntf
 _doprnti
@@ -171,7 +170,6 @@ acqt2
 acqt2_bit
 acss
 acss_bit
-ad
 adc_read
 adcon0
 adcon1
@@ -256,8 +254,6 @@ brgh
 brgh_bit
 bsr
 button
-byte_1
-byte_2
 byte2double
 bytetostr
 c
@@ -397,8 +393,6 @@ cosh
 create_world
 cren
 cren_bit
-critic_hhh
-critic_mmm
 cs
 cs_bit
 csrc
@@ -491,8 +485,6 @@ eepgd
 eepgd_bit
 eeprom_read
 eeprom_write
-enter
-entrada
 equals_double
 exp
 expander_init
@@ -511,7 +503,6 @@ expander_write_byte
 expander_write_porta
 expander_write_portab
 expander_write_portb
-external_interrupt
 f
 fa1
 fabs
@@ -555,10 +546,11 @@ fsr2ptr
 fullbits
 gcen
 gcen_bit
+generate_food
+generate_food_bool
 get_fosc_khz
 getsprite
 ghost
-ghost_count
 ghost_orientation
 ghost_x
 ghost_y
@@ -591,7 +583,6 @@ go_bit
 go_done
 go_done_bit
 halfbits
-hhh
 hlvdcon
 hlvden
 hlvden_bit
@@ -611,7 +602,6 @@ hlvdl2
 hlvdl2_bit
 hlvdl3
 hlvdl3_bit
-hora_txt
 i
 i2c1_init
 i2c1_is_idle
@@ -708,6 +698,7 @@ isgraph
 islower
 ispunct
 isspace
+isstarted
 isupper
 isxdigit
 ivrst
@@ -884,9 +875,7 @@ mmc_read_cid
 mmc_read_csd
 mmc_read_sector
 mmc_write_sector
-mmm
 modf
-move_delay
 move_ghost
 move_ghost_bool
 mul_16x16_s
@@ -895,8 +884,6 @@ mul_32x32_fp
 mul_32x32_s
 mul_32x32_u
 mul_8x8_s
-myrand
-mysrand
 n
 n_bit
 new_ghost_x
@@ -904,7 +891,6 @@ new_ghost_y
 newpacman_x
 newpacman_y
 newpacmanorientation
-next
 not_a
 not_a_bit
 not_address
@@ -1106,7 +1092,6 @@ pssbd0
 pssbd0_bit
 pssbd1
 pssbd1_bit
-pula_linha
 pwm1_init
 pwm1_set_duty
 pwm1_start
@@ -1159,7 +1144,6 @@ ra6_bit
 ra7
 ra7_bit
 rand
-rands
 rb0
 rb0_bit
 rb1
@@ -1246,9 +1230,6 @@ re2
 re2_bit
 re3
 re3_bit
-read_eeprom
-read_eeprom_int
-read_rtc
 res032
 ri
 ri_bit
@@ -1496,8 +1477,8 @@ sspm3_bit
 sspov
 sspov_bit
 sspstat
-sss
 start_screen
+start_screen_1
 status
 stkful
 stkful_bit
@@ -1654,7 +1635,6 @@ tblptru3
 tblptru3_bit
 tblptru4
 tblptru4_bit
-temp
 time_datetoepoch
 time_epochtodate
 time_jd1970
@@ -1709,7 +1689,6 @@ tosh
 tosl
 tosu
 toupper
-transform_time
 trisa
 trisa0
 trisa0_bit
@@ -1815,7 +1794,6 @@ txip
 txip_bit
 txreg
 txsta
-txt
 ua
 ua_bit
 uart_rd_ptr
@@ -1858,8 +1836,6 @@ wren
 wren_bit
 wrerr
 wrerr_bit
-write_eeprom
-write_eeprom_int
 wue
 wue_bit
 xtoi

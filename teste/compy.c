@@ -11,7 +11,17 @@ sbit T6963C_ctrlwr_Direction  at TRISC2_bit;     // WR write signal
 sbit T6963C_ctrlrd_Direction  at TRISC1_bit;     // RD read signal
 sbit T6963C_ctrlcd_Direction  at TRISC0_bit;     // CD command/data signal
 sbit T6963C_ctrlrst_Direction at TRISC5_bit;     // RST reset signal
-unsigned int rands = 13;
+int isStarted = 0;
+
+// Notes
+const int DO1 = 65;
+const int RE_1 = 73;
+const int MI1 = 82;
+const int FA1 = 87;
+const int SOL1 = 98;
+const int LA1 = 110;
+const int SI1 = 123;
+const int DO2 = 131;
 
 unsigned char const blank[] = {
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -65,7 +75,8 @@ void print_text(unsigned char column, unsigned char line, unsigned char* text) {
    T6963C_write_text(text, line - 1, column - 1, T6963C_ROM_MODE_XOR);
 }
 
-int world[8][15];
+long world[8][15];
+
 int i = 0;
 int j = 0;
 int pacman_x = 0;
@@ -77,10 +88,10 @@ int ghost_y = 0;
 int new_ghost_y = 0;
 int new_ghost_x = 0;
 
-char pacman_orientation = (char) 1;
-char barrier_orientation = (char) 4;
-char food_orientation = (char) 5;
-char ghost_orientation = (char) 6;
+char pacman_orientation = 1;
+char barrier_orientation = 4;
+char food_orientation = 5;
+char ghost_orientation = 6;
 
 const unsigned char* getSprite(char charactereValue) {
     if (charactereValue == 0) {
@@ -104,63 +115,51 @@ const unsigned char* getSprite(char charactereValue) {
 void printCoordinate(int x, int y) {
      print(x, y, getSprite(world[x][y]));
 }
-
-unsigned int AD;        //0..1023
-unsigned int QTD_FOOD = 6;
+unsigned int QTD_FOOD = 3;
 int IS_FINISH = 0;
 int IS_GAME_OVER = 0;
-char TXT[7];
-unsigned long next = 1;
 
-int hhh, mmm, sss;
-int critic_hhh, critic_mmm;
-
-char ENTER[2] = {13,0};
-char ENTRADA[33]; //32 para o dado entrado + reserva do NULL
-
-int temp;
-char _char;
-
-/* InterrupÃ§Ã£o */
 int cnt = 0;
 int cnt2 = 0;
 void InitTimer2(){
   T2CON         = 0x3C;
   TMR2IE_bit         = 1;
   PR2                 = 249;
-  INTCON         = 0xD0;  //INTCON = 1100 0000 (HABILITA TMR2 INTERRUPT E INT0 INTERRUPT)
+  INTCON         = 0xD0;
 }
 
-void external_interrupt() {
-    PORTA.F2 = ~PORTA.F2;
-}
+int generate_food_bool = 0;
 
 int move_ghost_bool = 0;
-char old_ghost_obj = 0;
+char old_ghost_obj = ' ';
 void move_ghost() {
-     new_ghost_y = ghost_y;
      new_ghost_x = ghost_x;
-     if (pacman_y > ghost_y) {
-        new_ghost_y = (ghost_y + 1);
-     } else if (pacman_y < ghost_y) {
-         new_ghost_y = (ghost_y - 1);
-     } else {
-        if (pacman_x > ghost_x) {
-        new_ghost_x = (ghost_x + 1);
 
-       } else if (pacman_x < ghost_x) {
-          new_ghost_x = (ghost_x - 1);
-       }
-     }
-     if (world[new_ghost_x][new_ghost_x] == barrier_orientation) {
-        new_ghost_x = new_ghost_x + 1;
+     if (pacman_x > ghost_x) {
+       new_ghost_x = ghost_x + 1;
+     } else if (pacman_x < ghost_x) {
+       new_ghost_x = ghost_x - 1;
      }
 
-     world[ghost_x][ghost_y] = old_ghost_obj != 0 ? old_ghost_obj : ' ';
+     if (world[new_ghost_x][ghost_y] == barrier_orientation) {
+         new_ghost_x = ghost_x;
+         if (world[ghost_x][ghost_y + 1] != barrier_orientation) {
+           new_ghost_y = ghost_y + 1;
+         } else if (world[ghost_x][ghost_y - 1] != barrier_orientation) {
+           new_ghost_y = ghost_y - 1;
+         }
+     } else if (new_ghost_x == ghost_x) {
+         if (pacman_y > ghost_y && world[ghost_x][ghost_y + 1] != barrier_orientation) {
+           new_ghost_y = ghost_y + 1;
+         } else if (pacman_y < ghost_y && world[ghost_x][ghost_y - 1] != barrier_orientation) {
+           new_ghost_y = ghost_y - 1;
+         }
+     }
+
+     world[ghost_x][ghost_y] = old_ghost_obj;
      printCoordinate(ghost_x, ghost_y);
 
-
-     old_ghost_obj = world[ghost_x][ghost_x] != ghost_orientation ? world[new_ghost_x][new_ghost_y] : ' ';
+     old_ghost_obj = world[new_ghost_x][new_ghost_y];
      world[new_ghost_x][new_ghost_y] = ghost_orientation;
      printCoordinate(new_ghost_x, new_ghost_y);
 
@@ -182,10 +181,18 @@ void interrupt() {
 
   if (TMR2IF_bit) {
     cnt++;
-    if (cnt >= 1000) {
-      PORTA.F1 = ~PORTA.F1;
-      cnt = 0;
-      move_ghost_bool = 1;
+    if (cnt >= 10000) {
+       cnt = 0;
+    }
+    if (cnt % 5000 == 0) {
+      if (isStarted) {
+        generate_food_bool = 1;
+      }
+    }
+    if (cnt % 1000 == 0) {
+      if (isStarted) {
+         move_ghost_bool = 1;
+      }
     }
     TMR2IF_bit = 0;        // clear TMR2IF
   }
@@ -193,7 +200,7 @@ void interrupt() {
 
 char Le_Teclado()
 {
-  PORTD = 0B00010000; // VOCÃŠ SELECIONOU LA
+  PORTD = 0B00010000; // VOCÊ SELECIONOU LA
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '7';
@@ -211,7 +218,7 @@ char Le_Teclado()
     return '%';
   }
 
-  PORTD = 0B00100000; // VOCÃŠ SELECIONOU LB
+  PORTD = 0B00100000; // VOCÊ SELECIONOU LB
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '4';
@@ -229,7 +236,7 @@ char Le_Teclado()
     return '*';
   }
 
-  PORTD = 0B01000000; // VOCÃŠ SELECIONOU LC
+  PORTD = 0B01000000; // VOCÊ SELECIONOU LC
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return '1';
@@ -247,7 +254,7 @@ char Le_Teclado()
     return '-';
   }
 
-  PORTD = 0B10000000; // VOCÃŠ SELECIONOU LD
+  PORTD = 0B10000000; // VOCÊ SELECIONOU LD
   if (PORTA.RA5 == 1) {
     while(PORTA.RA5 == 1);
     return 'C';
@@ -268,42 +275,6 @@ char Le_Teclado()
   return (char) 255;
 }
 
-void Pula_Linha(void)
-{
- UART1_WRITE(13);
- UART1_WRITE(10);
-}
-
-void Move_Delay() {                  // Function used for text moving
-  Delay_ms(100);                     // You can change the moving speed here
-}
-
-
-const int GHOST_COUNT = 0;
-
-int myrand(unsigned seed) {
-    next = seed;
-    next = next * 1103515245 + 12345;
-    return((unsigned)(next/65536) % 32768);
-}
-
-void mysrand(unsigned seed) {
-    next = seed;
-}
-
-int Read_RTC(int END)
-{
-  int Dado;
-  I2C1_Start();           // issue I2C start signal
-  I2C1_Wr(0xD0);          // send byte via I2C  (device address + W)
-  I2C1_Wr(END);             // send byte (data address)
-  I2C1_Repeated_Start();  // issue I2C signal repeated start
-  I2C1_Wr(0xD1);          // send byte (device address + R)
-  Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
-  I2C1_Stop();            // issue I2C stop signal
-  return(Dado);
-}
-
 void Print_World() {
     for(i = 0; i < 15; ++i) {
        for(j = 0; j < 8; ++j)
@@ -313,8 +284,6 @@ void Print_World() {
     }
 }
 
-int food_x = 0;
-int food_y = 0;
 void Create_World() {
     for(i = 0; i < 15; ++i) {
        for(j = 0; j < 8 ; ++j)
@@ -322,31 +291,42 @@ void Create_World() {
          world[i][j] = ' ';
        }
     }
-    // Foi criado um metodo para fazer isso, porem o compilador caga
-    world[4][myrand(rands * 5) & 0b000000000000000111] = barrier_orientation;
-    world[myrand(rands * 1) & 0b000000000000000111][myrand(rands * 1) & 0b000000000000000111] = barrier_orientation;
-    world[myrand(rands * 26) & 0b000000000000000111][myrand(rands * 50) & 0b000000000000000111] = barrier_orientation;
-    world[myrand(rands * 76) & 0b000000000000000111][myrand(rands * 985) & 0b000000000000000111] = barrier_orientation;
-
-    world[myrand(rands * 500)& 0b000000000000000111][myrand(rands * 12)& 0b000000000000000111] = food_orientation;
-    world[myrand(rands * 1)& 0b000000000000000111][myrand(rands * 85)& 0b000000000000000111] = food_orientation;
-    world[myrand(rands * 63)& 0b000000000000000111][myrand(rands * 552)& 0b000000000000000111] = food_orientation;
+    world[5][0] = barrier_orientation;
+    world[5][1] = barrier_orientation;
+    world[2][5] = barrier_orientation;
+    world[11][5] = barrier_orientation;
+    world[10][6] = barrier_orientation;
+    world[3][5] = barrier_orientation;
+    world[4][5] = barrier_orientation;
+    world[11][5] = barrier_orientation;
+    world[14][5] = barrier_orientation;
+    world[12][6] = barrier_orientation;
+    world[13][7] = barrier_orientation;
+    world[3][2] = barrier_orientation;
+    world[8][3] = barrier_orientation;
+    world[4][1] = barrier_orientation;
 
     world[11][5] = food_orientation;
     world[5][3] = food_orientation;
     world[8][2] = food_orientation;
     world[7][7] = food_orientation;
 
-    if (world[ghost_x][ghost_y] == food_orientation) {
-       --QTD_FOOD;
-    }
-    if (world[pacman_x][pacman_y] == food_orientation){
-        --QTD_FOOD;
-    }
     world[ghost_x][ghost_y] = ghost_orientation;
-    world[pacman_x][pacman_y] = (char) pacman_orientation;
+    world[pacman_x][pacman_y] = pacman_orientation;
 
     Print_World();
+}
+
+int food_x = 0;
+int food_y = 0;
+void generate_food() {
+  food_x = rand() % 15;
+  food_y = rand() % 8;
+  if (world[food_x][food_y] == ' ') {
+    world[food_x][food_y] = food_orientation;
+    printCoordinate(food_x, food_y);
+    QTD_FOOD++;
+  }
 }
 
 char update_pacman_orientation(int newX, int newY) {
@@ -387,15 +367,14 @@ void update_pacman(short direction) {
 
   if (newPacman_y < 0) newPacman_y = 7;
   if (newPacman_y > 7) newPacman_y = 0;
-  
-  if (QTD_FOOD == 0) {
-      IS_FINISH = 1;
-      IS_GAME_OVER = 0;
-  }
 
   if (world[newPacman_x][newPacman_y] != barrier_orientation) {
     if (world[newPacman_x][newPacman_y] == food_orientation) {
        QTD_FOOD--;
+    }
+    if (QTD_FOOD == 0) {
+        IS_FINISH = 1;
+        IS_GAME_OVER = 0;
     }
 
     pacman_orientation = newPacmanOrientation;
@@ -411,55 +390,8 @@ void update_pacman(short direction) {
   }
 }
 
-void Write_EEPROM(int END, int DADO)
-{
-  I2C1_Start();           // issue I2C start signal
-  I2C1_Wr(0xA0);          // send byte via I2C  (device address + W)
-  I2C1_Wr(END);             // send byte (address of EEPROM location)
-  I2C1_Wr(DADO);          // send data (data to be written)
-  I2C1_Stop();            // issue I2C stop signal
-  delay_ms(10);
-}
-
-void Write_EEPROM_Int(int END, int dado) {
-  Write_EEPROM(END, dado / 256);
-  Write_EEPROM(END + 1, dado % 256);
-}
-
-int Read_EEPROM(int END)
-{
-  int Dado;
-  I2C1_Start();           // issue I2C start signal
-  I2C1_Wr(0xA0);          // send byte via I2C  (device address + W)
-  I2C1_Wr(END);             // send byte (data address)
-  I2C1_Repeated_Start();  // issue I2C signal repeated start
-  I2C1_Wr(0xA1);          // send byte (device address + R)
-  Dado = I2C1_Rd(0u);    // Read the data (NO acknowledge)
-  I2C1_Stop();            // issue I2C stop signal
-  return(Dado);
-}
-
-short byte_1 = 0;
-short byte_2 = 0;
-int Read_EEPROM_Int(int END) {
-   byte_1 = Read_EEPROM(END);
-   byte_2 = Read_EEPROM(END + 1);
-
-   return (byte_1 * 256) + byte_2;
-}
-
-
-// bcd para binario
-void Transform_Time(char *sec, char *min, char *hr) {
-  *sec = ((*sec & 0xF0) >> 4)*10 + (*sec & 0x0F);
-  *min = ((*min & 0xF0) >> 4)*10 + (*min & 0x0F);
-  *hr = ((*hr & 0xF0) >> 4)*10 + (*hr & 0x0F);
-}
-
 int meta = 0;
 char command = (char) 0;
-char HORA_TXT[20];
-
 void Start_Screen() {
     print_text(1, 6, "PAC MAN");
     print_text(3, 1, "PRESSIONE UMA TECLA!");
@@ -481,26 +413,32 @@ void Finish() {
     }
 }
 
-const int DO1 = 65;
-const int RE_1 = 73;
-const int MI1 = 82;
-const int FA1 = 87;
-const int SOL1 = 98;
-const int LA1 = 110;
-const int SI1 = 123;
-const int DO2 = 131;
+void Start_Screen_1() {
+    Sound_Play(DO1, 200);
+    Sound_Play(DO1, 200);
+    Sound_Play(RE1, 200);
+    Sound_Play(DO1, 200);
+    Sound_Play(FA1, 1000);
+    Delay_ms(500);
+    Sound_Play(DO2, 100);
+    Sound_Play(SI1, 100);
+    Sound_Play(LA1, 100);
+    Sound_Play(SOL1, 100);
+    Sound_Play(DO1, 100);
+}
 
 void main() {           // General purpose register
-UART1_Init(19200);
+  UART1_Init(19200);
   I2C1_Init(100000);
   ADCON1 = 0B00001110;
   TRISB = 0B00001111;
   TRISA = 0B00100001;
 
-
   TRISA3_bit = 1;               // Set RA3 as input
   TRISA4_bit = 1;               // Set RA4 as input
 
+  Sound_Init(&PORTC, 5);
+  Start_Screen_1();
   // Initialize T6369C
   // 15 x 8
   T6963C_init(240, 128, 8);
@@ -515,6 +453,7 @@ UART1_Init(19200);
 
   //Start_Screen();
   Create_World();
+  isStarted = 1;
 
   while (1) {
       if (IS_FINISH) {
@@ -539,9 +478,18 @@ UART1_Init(19200);
 
       if (move_ghost_bool) {
          move_ghost_bool = 0;
-         UART1_Write_Text("UART");
+         UART1_Write_Text("X");
          move_ghost();
       }
+      if (generate_food_bool) {
+         generate_food_bool = 0;
+         UART1_Write_Text("Y");
+         generate_food();
+      }
+        if (QTD_FOOD < 1) {
+           IS_FINISH = 1;
+           IS_GAME_OVER = 0;
+        }
   }
   Finish();
 

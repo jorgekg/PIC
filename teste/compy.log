@@ -3,12 +3,12 @@ Line	MessageNo	File Name
 hint: 0	1138	Available RAM: 3947 [bytes], Available ROM: 65536 [bytes]	 
 diagnostics: 0	126	All files Preprocessed in 47 ms	 
 diagnostics: 0	122	Compilation Started	__t6963c.h
-warning: 494	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	compy.c
-diagnostics: 548	123	Compiled Successfully	compy.c
-diagnostics: 0	127	All files Compiled in 343 ms	 
-hint: 0	1143	Used RAM (bytes): 377 (10%)  Free RAM (bytes): 3570 (90%)	Used RAM (bytes): 377 (10%)  Free RAM (bytes): 3570 (90%)
-hint: 0	1143	Used ROM (bytes): 5629 (9%)  Free ROM (bytes): 59907 (91%)	Used ROM (bytes): 5629 (9%)  Free ROM (bytes): 59907 (91%)
+warning: 431	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	compy.c
+diagnostics: 496	123	Compiled Successfully	compy.c
+diagnostics: 0	127	All files Compiled in 375 ms	 
+hint: 0	1143	Used RAM (bytes): 633 (16%)  Free RAM (bytes): 3314 (84%)	Used RAM (bytes): 633 (16%)  Free RAM (bytes): 3314 (84%)
+hint: 0	1143	Used ROM (bytes): 7710 (12%)  Free ROM (bytes): 57826 (88%)	Used ROM (bytes): 7710 (12%)  Free ROM (bytes): 57826 (88%)
 diagnostics: 0	125	Project Linked Successfully	compy.mcppi
-diagnostics: 0	128	Linked in 938 ms	 
-diagnostics: 0	129	Project 'compy.mcppi' completed: 1797 ms	 
-diagnostics: 0	103	Finished successfully: 10 jun 2020, 19:57:58	compy.mcppi
+diagnostics: 0	128	Linked in 1141 ms	 
+diagnostics: 0	129	Project 'compy.mcppi' completed: 2141 ms	 
+diagnostics: 0	103	Finished successfully: 14 jun 2020, 09:45:16	compy.mcppi
