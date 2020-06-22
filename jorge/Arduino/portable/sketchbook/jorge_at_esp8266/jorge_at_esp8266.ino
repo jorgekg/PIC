@@ -83,11 +83,31 @@ BLYNK_WRITE(V4)
   Serial.println(pinValue);
 }
 
+BLYNK_WRITE(V5)
+{
+  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  // You can also use:
+  // String i = param.asStr();
+  // double d = param.asDouble();
+  Serial.print("V5 Button value: ");
+  digitalWrite(4, pinValue);
+}
+
 void setup()
 {
   // Debug console
   Serial.begin(9600);
 
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+
+  digitalWrite(4, LOW);
+  digitalWrite(5, LOW);
+  digitalWrite(6, LOW);
+  digitalWrite(7, LOW);
+  
   // Set ESP8266 baud rate
   EspSerial.begin(ESP8266_BAUD);
   delay(10);
