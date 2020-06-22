@@ -1,0 +1,55 @@
+{
+  "files" : [ {
+    "remoteURL" : "https://downloads.arduino.cc/libraries/library_index.json.gz",
+    "localPath" : "C:\\Users\\jorge\\git\\PIC\\jorge\\Arduino\\portable\\cache\\downloads.arduino.cc\\libraries\\library_index.json.gz",
+    "eTag" : "ac75173d168fbe1e558fec09ade95019",
+    "md5" : "MD5:ac75173d168fbe1e558fec09ade95019",
+    "createdAt" : "2020-06-22T19:05:26.207",
+    "cacheControl" : {
+      "maxAge" : 14400,
+      "mustRevalidate" : false,
+      "noStore" : false,
+      "noCache" : false
+    },
+    "expires" : "2020-06-22T23:05:26.207"
+  }, {
+    "remoteURL" : "https://downloads.arduino.cc/libraries/library_index.json.sig",
+    "localPath" : "C:\\Users\\jorge\\git\\PIC\\jorge\\Arduino\\portable\\cache\\downloads.arduino.cc\\libraries\\library_index.json.sig",
+    "eTag" : "aaa68bb8042758c9a38d3e867b779063",
+    "md5" : "MD5:aaa68bb8042758c9a38d3e867b779063",
+    "createdAt" : "2020-06-22T19:05:27.032",
+    "cacheControl" : {
+      "maxAge" : 14400,
+      "mustRevalidate" : false,
+      "noStore" : false,
+      "noCache" : false
+    },
+    "expires" : "2020-06-22T23:05:27.032"
+  }, {
+    "remoteURL" : "https://downloads.arduino.cc/packages/package_index.json.sig",
+    "localPath" : "C:\\Users\\jorge\\git\\PIC\\jorge\\Arduino\\portable\\cache\\downloads.arduino.cc\\packages\\package_index.json.sig",
+    "eTag" : "cb0f5cbc05162633cccecd0864d2d8f8",
+    "md5" : "MD5:cb0f5cbc05162633cccecd0864d2d8f8",
+    "createdAt" : "2020-06-22T19:05:24.524",
+    "cacheControl" : {
+      "maxAge" : 3600,
+      "mustRevalidate" : false,
+      "noStore" : false,
+      "noCache" : false
+    },
+    "expires" : "2020-06-22T20:05:24.524"
+  }, {
+    "remoteURL" : "https://downloads.arduino.cc/packages/package_index.json",
+    "localPath" : "C:\\Users\\jorge\\git\\PIC\\jorge\\Arduino\\portable\\cache\\downloads.arduino.cc\\packages\\package_index.json",
+    "eTag" : "a2025c1087fc6e00040e5781ba9c8e50",
+    "md5" : "MD5:a2025c1087fc6e00040e5781ba9c8e50",
+    "createdAt" : "2020-06-22T19:05:23.947",
+    "cacheControl" : {
+      "maxAge" : 3600,
+      "mustRevalidate" : false,
+      "noStore" : false,
+      "noCache" : false
+    },
+    "expires" : "2020-06-22T20:05:23.947"
+  } ]
+}
